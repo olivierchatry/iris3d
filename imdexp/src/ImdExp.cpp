@@ -12,6 +12,7 @@ purpose:	Main exporter function.
 *********************************************************************/
 #include <stdafx.h>
 #include <imd2/imd2.hpp>
+#include <utility>
 /*
  *	consttructor destructor
  */
@@ -402,6 +403,8 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 						mesh_data._normal[index_vertex] = tmp * mesh_data._normal[index_vertex];
 						memcpy(mesh->imd2_vertex[offset].normal, mesh_data._normal[index_vertex], sizeof(float) * 3);
 						memcpy(mesh->imd2_vertex[offset].pos, mesh_data._vertex[index_vertex], sizeof(float) * 3);
+						std::swap(mesh->imd2_vertex[offset].pos[1], mesh->imd2_vertex[offset].pos[2]);
+						std::swap(mesh->imd2_vertex[offset].normal[1], mesh->imd2_vertex[offset].normal[2]);
 						uint r = (uint) (imesh->_mesh_color_mapping._color[index_vertex].x * 255) & 0xff;
 						uint g = (uint) (imesh->_mesh_color_mapping._color[index_vertex].y * 255) & 0xff;
 						uint b = (uint) (imesh->_mesh_color_mapping._color[index_vertex].z * 255) & 0xff;
@@ -418,6 +421,8 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 				{
 					memcpy(mesh->imd2_vertex[index_vertex].normal, imesh->_mesh_data[0]._normal[index_vertex], sizeof(float) * 3);
 					memcpy(mesh->imd2_vertex[index_vertex].pos, imesh->_mesh_data[0]._vertex[index_vertex], sizeof(float) * 3);
+					std::swap(mesh->imd2_vertex[index_vertex].pos[1], mesh->imd2_vertex[index_vertex].pos[2]);
+					std::swap(mesh->imd2_vertex[index_vertex].normal[1], mesh->imd2_vertex[index_vertex].normal[2]);
 					uint r = (uint) (imesh->_mesh_color_mapping._color[index_vertex].x * 255) & 0xff;
 					uint g = (uint) (imesh->_mesh_color_mapping._color[index_vertex].y * 255) & 0xff;
 					uint b = (uint) (imesh->_mesh_color_mapping._color[index_vertex].z * 255) & 0xff;
