@@ -14,12 +14,12 @@ Point3	ImdExp::GetCenter(Mesh &mesh)
 }
 
 
-ImportedTag *ImdExp::ImportTagObject(INode *node, TriObject *tri_object, ObjectState &os)
+ImportedTag *ImdExp::ImportTagObject(INode *node, ObjectState &os)
 {
 	_log->Print("  + Importing Tag Object");
 	ImportedTag		*imported_tag = new ImportedTag;
 	Matrix3			offset_matrix = GetNodeOffsetTM(node);
-	Mesh			&mesh = tri_object->GetMesh();
+	Mesh			&mesh = GetTriObjectFromNode(node, 0)->GetMesh();
 	Interval		anim_range(_plugin_config._begin_frame, _plugin_config._end_frame);
 	int				tag_index = 0;
 	if (imported_tag == 0)
@@ -39,6 +39,7 @@ ImportedTag *ImdExp::ImportTagObject(INode *node, TriObject *tri_object, ObjectS
 	TSTR	buffer;
 	node->GetUserPropBuffer(buffer);
 	imported_tag->_user_properties = buffer.data();
+	imported_tag->_name = node->GetName();
 	_log->Printf("Properties = %s", imported_tag->_user_properties.c_str());
 
 	return imported_tag;

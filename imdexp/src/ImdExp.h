@@ -121,7 +121,7 @@ protected:
 	Matrix3			GetNodeOffsetTM(INode* node);
 	void			ImportMeshData(INode *node, ObjectState &os);
 	void			ImportTriangularData(INode *node, ObjectState &os);
-	ImportedMesh*	ImportTriangularObject(INode *node, TriObject *tri_object, ObjectState &os);
+	ImportedMesh*	ImportTriangularObject(INode *node, ObjectState &os);
 	bool			ImportTriangularFace(Mesh *mesh, ImportedMesh *imported_mesh);
 	void			ImportTriangularMapping(Mesh *mesh, ImportedMesh *imesh, uword *face_data);
 	// -- sub part : weight
@@ -137,10 +137,12 @@ protected:
 	bool			StripTriangularNVidia(uword *face, int count, ImportedMesh *imported_mesh);
 	// tag
 	void			ImportTagData(INode *node, ObjectState &os);
-	ImportedTag*	ImportTagObject(INode *node, TriObject *tri_object, ObjectState &os);	// bones
+	ImportedTag*	ImportTagObject(INode *node, ObjectState &os);	// bones
 	// utils
 	Point3			GetCenter(Mesh &mesh);
 	void			FreeAll();
+	TriObject*		GetTriObjectFromNode(INode *node, TimeValue t);
+
 	// bone import
 	ImportedBone	*ImportBoneData();
 	void			ImportBoneAnimation(INode *node, BoneData *bone_data);

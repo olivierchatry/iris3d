@@ -53,10 +53,21 @@ void	Loger::Print(TCHAR *str)
 	{
 		HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 		DWORD	count;
-		WriteConsole(handle, str, strlen(str), &count, 0);
+		WriteConsole(handle, str, (DWORD) strlen(str), &count, 0);
 		WriteConsole(handle, "\n", 1, &count, 0);
 	}
+	Update();
 	delete [] text;
+}
+
+void	Loger::Update()
+{
+	MSG	msg;
+	while (PeekMessage(&msg, _hwnd, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 }
 
 void	Loger::Printf(TCHAR *str, ...)

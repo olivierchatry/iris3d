@@ -127,10 +127,7 @@ void	ImdExp::PopulateTreeView(HWND hwnd, INode* node, HTREEITEM parent)
 		node = ip->GetRootNode();
 	char	buffer[512];
 	ObjectState os = node->EvalWorldState(0);
-	if (os.obj)
-		sprintf(buffer, "%s [ID = %0.2X]", node->GetName(), os.obj->SuperClassID());
-	else
-		sprintf(buffer, "%s", node->GetName());
+	sprintf(buffer, "%s", node->GetName());
 	HTREEITEM me = AddNode(hwnd, IDC_TREESCENE, buffer, parent);
 	for (int c = 0; c < node->NumberOfChildren(); c++)
 		PopulateTreeView(hwnd, node->GetChildNode(c), me);	
@@ -177,10 +174,8 @@ void ImdExp::ImportMeshData(INode *node, ObjectState &os)
 {
 	// import only triangular data.
 	// bones are processed in another loop.
-	if (os.obj->ClassID() != Class_ID(BONE_OBJ_CLASSID))
-	{
+	if (!IsNodeBone(node))
 		ImportTriangularData(node, os);
-	}
 }
 
 Matrix3   ImdExp::GetNodeOffsetTM(INode* node)
@@ -238,14 +233,6 @@ void	ImdExp::FreeAll()
 	Loger::Get().Print("-- [ImdExp::FreeAll]");
 }
 
-void	PrintBone(BoneData *data, std::string tab)
-{
-	BoneData::bone_data_list_it_t it;	
-	Loger::Get().Printf("%s%d", tab.c_str(), data->_bone_index);
-	tab += "  ";
-	for (it = data->_bone_child.begin(); it != data->_bone_child.end(); ++it)
-		PrintBone(&(*it), tab);
-}
 
 unsigned short	ImdExp::CountElementOf(element_type type)
 {
@@ -334,7 +321,7 @@ void	ImdExp::ExportImd2Material(imd2_object_t &object, std::string &path)
 		ilDeleteImages(1, &image_id);
 		strncpy(object.imd2_material[count].file_name, file_name.c_str(), IMD2_MAX_NAME - 1);
 		// defin material id !!!
-		object.imd2_material[count].material_id = (int) material_data;
+		object.imd2_material[count].material_id = (int) (material_data);
 		_log->Printf("inserting material file [%s]", object.imd2_material[count].file_name);
 		material_data->_diffuse_map = strdup(new_file_name_path.c_str());
 		material_data->_env_map = 0;
@@ -342,16 +329,16 @@ void	ImdExp::ExportImd2Material(imd2_object_t &object, std::string &path)
 	}
 }
 
-#define MatrixToFloatP(m, max_mat)\
-{\
-	Point4	p = max_mat.GetRow(0);\
-	m[0] = p.x; m[1] = p.y; m[2] = p.z; m[3] = 0.0f;\
-	p = max_mat.GetRow(1);\
-	m[4] = p.x; m[5] = p.y; m[6] = p.z; m[7] = 0.0f;\
-	p = max_mat.GetRow(2);\
-	m[8] = p.x; m[9] = p.y; m[10] = p.z; m[11] = 0.0f;\
-	p = max_mat.GetRow(3);\
-	m[12] = p.x; m[13] = p.y; m[14] = p.z; m[15] = 1.0f;\
+void MatrixToFloatP(float *m, Matrix3 &max_mat)
+{
+	Point3 p = max_mat.GetRow(0);
+	m[0] = p.x; m[1] = p.y; m[2] = p.z; m[3] = 0.0f;
+	p = max_mat.GetRow(1);
+	m[4] = p.x; m[5] = p.y; m[6] = p.z; m[7] = 0.0f;
+	p = max_mat.GetRow(2);
+	m[8] = p.x; m[9] = p.y; m[10] = p.z; m[11] = 0.0f;
+	p = max_mat.GetRow(3);
+	m[12] = p.x; m[13] = p.y; m[14] = p.z; m[15] = 1.0f;
 }
 
 void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
@@ -370,7 +357,7 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 			ImportedMesh *imesh = (ImportedMesh *) el;
 			strncpy(mesh->imd2_mesh_header.name, imesh->_name.c_str(), IMD2_MAX_NAME - 1);
 			size_t vertex_count = imesh->_mesh_data[0]._vertex.size();
-			mesh->imd2_mesh_header.num_vertex = vertex_count;
+			mesh->imd2_mesh_header.num_vertex = (short) vertex_count;
 			object.imd2_object_header.have_skin |= imesh->_skin != 0;
 			mesh->imd2_mesh_header.have_skin = imesh->_skin != 0;
 			mesh->user_data = new char [imesh->_user_properties.size() + 1];
@@ -395,16 +382,16 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 				for (int index_anim = 0; index_anim < object.imd2_object_header.num_anim; ++index_anim)
 					for (size_t index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
 					{
-						int offset = vertex_count * index_anim + index_vertex;
+						size_t offset = vertex_count * index_anim + index_vertex;
 						MeshData &mesh_data = imesh->_mesh_data[index_anim];
+						std::swap(mesh_data._vertex[index_vertex].y, mesh_data._vertex[index_vertex].z);
+						std::swap(mesh_data._normal[index_vertex].y, mesh_data._normal[index_vertex].z);
 						mesh_data._vertex[index_vertex] = mesh_data._matrix * mesh_data._vertex[index_vertex];
-						Matrix3	tmp = 	mesh_data._matrix ;
+						Matrix3	tmp = 	mesh_data._matrix;
 						tmp.NoTrans();
 						mesh_data._normal[index_vertex] = tmp * mesh_data._normal[index_vertex];
 						memcpy(mesh->imd2_vertex[offset].normal, mesh_data._normal[index_vertex], sizeof(float) * 3);
 						memcpy(mesh->imd2_vertex[offset].pos, mesh_data._vertex[index_vertex], sizeof(float) * 3);
-						std::swap(mesh->imd2_vertex[offset].pos[1], mesh->imd2_vertex[offset].pos[2]);
-						std::swap(mesh->imd2_vertex[offset].normal[1], mesh->imd2_vertex[offset].normal[2]);
 						uint r = (uint) (imesh->_mesh_color_mapping._color[index_vertex].x * 255) & 0xff;
 						uint g = (uint) (imesh->_mesh_color_mapping._color[index_vertex].y * 255) & 0xff;
 						uint b = (uint) (imesh->_mesh_color_mapping._color[index_vertex].z * 255) & 0xff;
@@ -419,10 +406,11 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 				mesh->imd2_matrix = new imd2_matrix_t[object.imd2_object_header.num_anim];
 				for (size_t index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
 				{
-					memcpy(mesh->imd2_vertex[index_vertex].normal, imesh->_mesh_data[0]._normal[index_vertex], sizeof(float) * 3);
-					memcpy(mesh->imd2_vertex[index_vertex].pos, imesh->_mesh_data[0]._vertex[index_vertex], sizeof(float) * 3);
-					std::swap(mesh->imd2_vertex[index_vertex].pos[1], mesh->imd2_vertex[index_vertex].pos[2]);
-					std::swap(mesh->imd2_vertex[index_vertex].normal[1], mesh->imd2_vertex[index_vertex].normal[2]);
+					MeshData &mesh_data = imesh->_mesh_data[0];
+					std::swap(mesh_data._vertex[index_vertex].y, mesh_data._vertex[index_vertex].z);
+					std::swap(mesh_data._normal[index_vertex].y, mesh_data._normal[index_vertex].z);
+					memcpy(mesh->imd2_vertex[index_vertex].normal, mesh_data._normal[index_vertex], sizeof(float) * 3);
+					memcpy(mesh->imd2_vertex[index_vertex].pos, mesh_data._vertex[index_vertex], sizeof(float) * 3);
 					uint r = (uint) (imesh->_mesh_color_mapping._color[index_vertex].x * 255) & 0xff;
 					uint g = (uint) (imesh->_mesh_color_mapping._color[index_vertex].y * 255) & 0xff;
 					uint b = (uint) (imesh->_mesh_color_mapping._color[index_vertex].z * 255) & 0xff;
@@ -443,6 +431,7 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 			// exporting skining information if needed;
 			if (object.imd2_object_header.have_skin && imesh->_skin)
 			{	
+				int	skinned_vertex = 0;
 				int	count_bones = 0;
 				// first count all bone linked to this vertex.
 				int	vertex_count = mesh->imd2_mesh_header.num_vertex;
@@ -470,18 +459,21 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 						for(;it_w != it->second._point_weight.end(); ++it_w)
 							if (it_w->_point_index == index_vertex)
 							{
+								int bone_index = it->second._bone_index;
 								mesh->imd2_skin[index_vertex].weight[count_bones].weight = it_w->_weight;
-								mesh->imd2_skin[index_vertex].weight[count_bones].bone_index = it->second._bone_index;
+								mesh->imd2_skin[index_vertex].weight[count_bones].bone_index = bone_index;
 								count_bones ++;
+								skinned_vertex ++;
 							}
 					}		
 				}
-				
+				mesh->imd2_mesh_header.num_skinned = skinned_vertex;	
 			}
-
 			mesh ++;
 		}
 	}
+	object.imd2_object_header.num_bones = GetNumBones(ip->GetRootNode());
+	Loger::Get().Printf("End converting to imd2, Num bones = %d", object.imd2_object_header.num_bones);
 }
 
 void	ImdExp::ExportImd2Tag(imd2_object_t &object)
@@ -558,6 +550,7 @@ int	ImdExp::GetNumBones(INode *node)
 	return count;
 }
 
+
 Matrix3& ImdExp::FixCoordSys(Matrix3 &tm)
 {
 	// swap 2nd and 3rd rows
@@ -599,9 +592,6 @@ void	ImdExp::RecursiveSaveBone(imd2_bone_file_t *imd2_bone, BoneData *data, int 
 	{
 		imd2_bone_anim_t	*anim = &(imd2_bone->bones[index].imd2_bone_anim[i]);
 		MatrixToFloatP(anim->matrix, data->_animation[i].matrix);
-		anim->pos[0] = data->_animation[i].pos.x;
-		anim->pos[1] = data->_animation[i].pos.y;
-		anim->pos[2] = data->_animation[i].pos.z;
 	}
 	index ++;
 	size_t	child_count = data->_bone_child.size();

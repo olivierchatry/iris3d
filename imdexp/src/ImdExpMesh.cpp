@@ -144,7 +144,7 @@ void	ImdExp::ImportTriangularMapping(Mesh *mesh, ImportedMesh *imesh, uword *fac
 	size_t	original_index = imesh->_mesh_data[0]._vertex.size();
 	for (size_t vi = 0; vi < size_to_add; ++vi)
 	{
-		imesh->_map_vertices.push_back(MapVertice(added_vertex[vi], vi + original_index));
+		imesh->_map_vertices.push_back(MapVertice(added_vertex[vi], (int) (vi) + original_index));
 		for (size_t j = 0; j < imesh->_mesh_data.size(); ++j)
 		{
 			imesh->_mesh_data[j]._vertex.push_back(imesh->_mesh_data[j]._vertex[added_vertex[vi]]);
@@ -176,7 +176,7 @@ bool	ImdExp::ImportTriangularFace(Mesh *mesh, ImportedMesh *imported_mesh)
 		faces ++;
 	}
 	ImportTriangularMapping(mesh, imported_mesh, face_data);
-	if (StripTriangularZappy(face_data, face_count, imported_mesh) == false)
+	//if (StripTriangularZappy(face_data, face_count, imported_mesh) == false)
 		if (StripTriangularNVidia(face_data, face_count, imported_mesh) == false)
 		{
 			_log->Print("  ! can't strip object, sorry :(");
@@ -186,7 +186,7 @@ bool	ImdExp::ImportTriangularFace(Mesh *mesh, ImportedMesh *imported_mesh)
 		return true;
 }
 
-TriObject* GetTriObjectFromNode(INode *node, TimeValue t)
+TriObject* ImdExp::GetTriObjectFromNode(INode *node, TimeValue t)
 {
 	Object *obj = node->EvalWorldState(t).obj;
 	if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0))) 
@@ -198,45 +198,52 @@ TriObject* GetTriObjectFromNode(INode *node, TimeValue t)
 }
 
 
-ImportedMesh *ImdExp::ImportTriangularObject(INode *node, TriObject *tri_object, ObjectState &os)
+ImportedMesh *ImdExp::ImportTriangularObject(INode *node, ObjectState &os)
 {
-	Mesh			&mesh = tri_object->GetMesh();
+	Mesh			*mesh = &GetTriObjectFromNode(node, 0)->GetMesh();
 	ImportedMesh	*imported_mesh = new ImportedMesh;
 	TimeValue		inc = GetTicksPerFrame();
-	int				mesh_index = 0;	
 	Matrix3			offset_matrix = GetNodeOffsetTM(node);
-
+	
 	if (imported_mesh == 0)
 		return 0;
 	// Look for an empty mesh
-	if ( ( !mesh.getNumVerts( ) ) || ( !mesh.getNumFaces( ) ) )
+	if ( ( !mesh->getNumVerts( ) ) || ( !mesh->getNumFaces( ) )  || ( !mesh->getNumTVerts()))
 		return 0;
 	if (node->GetMtl() != 0)
 		imported_mesh->_material = ImportMaterialData(node->GetMtl(), os);
+	else
+	{
+		_log->Print("  !!! Security : Cannot import object with no material");
+		delete imported_mesh;
+		return 0;
+	}
 	// read vertex data;
-	int vertex_count = mesh.getNumVerts();
+	int vertex_count = mesh->getNumVerts();
 	imported_mesh->_vertex_total = vertex_count;
 	imported_mesh->_mesh_data.resize(_plugin_config._end_frame - _plugin_config._begin_frame + 1);
 	_log->Print("  + Importing Triangular Object");
+	int	real_index = 0;
 	for (TimeValue i = _plugin_config._begin_frame; i <= _plugin_config._end_frame; i ++)
 	{
 		AffineParts	ap;
 		TimeValue	tv = i * inc;
-		TriObject	*triobj = GetTriObjectFromNode(node, tv);
-		Mesh		&the_mesh = triobj->GetMesh();
-		MeshData	&mesh_data = imported_mesh->_mesh_data[mesh_index++];
-		mesh_data._matrix =  FixCoordSys(node->GetObjTMAfterWSM(tv));	
+		Mesh		&the_mesh = GetTriObjectFromNode(node, tv)->GetMesh();
+		MeshData	&mesh_data = imported_mesh->_mesh_data[real_index++];
 		the_mesh.buildNormals();
+		mesh_data._matrix =  FixCoordSys(offset_matrix * node->GetNodeTM(tv) * Inverse(node->GetParentTM(tv)));	
 		mesh_data.Allocate(vertex_count);
 		for (int v = 0; v < vertex_count; ++v)
 		{													
-			mesh_data._vertex[v] = the_mesh.getVert(v);
+			Point3 point = the_mesh.getVert(v);
+			mesh_data._vertex[v] = point;
 			mesh_data._normal[v] = the_mesh.getNormal(v);
 		}
 	}
+	mesh = &(GetTriObjectFromNode(node, 0)->GetMesh());
 	_log->Printf("Non modified Num vertex  : %d", vertex_count);
 	// stripping des faces, mapping et couleur.
-	if (ImportTriangularFace(&mesh, imported_mesh) == false)
+	if (ImportTriangularFace(mesh, imported_mesh) == false)
 	{
 		delete imported_mesh;
 		return 0;
@@ -248,6 +255,7 @@ ImportedMesh *ImdExp::ImportTriangularObject(INode *node, TriObject *tri_object,
 	TSTR	buffer;
 	node->GetUserPropBuffer(buffer);
 	imported_mesh->_user_properties = buffer.data();
+	imported_mesh->_name = node->GetName();
 	_log->Printf("Properties = %s", imported_mesh->_user_properties.c_str());
 	return imported_mesh;
 }
@@ -274,12 +282,10 @@ void ImdExp::ImportTriangularData(INode *node, ObjectState &os)
 	//	then parse it as a tag.
 	_log->Printf("Importing object [%s]", name);
 	if (strncmp(name, "tag", 3) == 0)
-	{
-		imported_element = ImportTagObject(node, tri_object, os);
-	}
+		imported_element = ImportTagObject(node, os);
 	else
 	{
-		imported_element = ImportTriangularObject(node, tri_object, os);
+		imported_element = ImportTriangularObject(node, os);
 		if (imported_element)
 			ImportSkinData(node, (ImportedMesh *) imported_element); // try to get skin form our mesh
 	}

@@ -16,6 +16,7 @@ public:
 		static Loger singleton;
 		return singleton;
 	}
+	void	Update();
 protected:
 	bool	_dos_window;
 	Loger();

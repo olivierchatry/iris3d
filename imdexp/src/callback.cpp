@@ -48,8 +48,6 @@ void EnableDialogObjectAnimationItem(HWND hWnd, bool animation_enabled)
 	EnableWindow(GetDlgItem(hWnd, IDC_SPIN_END), animation_enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_EDIT_BEGIN), animation_enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_EDIT_END), animation_enabled);
-	EnableWindow(GetDlgItem(hWnd, IDC_RADIOSAMPLEMATRIX), animation_enabled);
-	EnableWindow(GetDlgItem(hWnd, IDC_RADIOSAMPLEVERTEX), animation_enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_SPIN_STATIC), !animation_enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_EDIT_STATIC), !animation_enabled);
 }
@@ -89,7 +87,7 @@ INT_PTR  CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 {
 	ISpinnerControl  *spin;
 	Interval		animRange;
-	ImdExp *exp = (ImdExp*) GetWindowLongPtr(hWnd,GWLP_USERDATA);
+	ImdExp *exp = (ImdExp *) GetWindowLongPtr(hWnd,GWLP_USERDATA);
 	switch (msg) 
 	{
 	case WM_INITDIALOG:

@@ -22,8 +22,9 @@ typedef	struct	imd2_object_header_s
 	unsigned	short	num_material;
 	unsigned	short	num_tag;
 	unsigned	short	num_light;
-	bool		have_skin;
-	bool		matrix_sampling;
+	bool				have_skin;
+	bool				matrix_sampling;
+	int					num_bones;
 }								imd2_object_header_t;
 
 
@@ -85,6 +86,7 @@ typedef struct	imd2_mesh_header_s
 	short	num_vertex;
 	int		material_id;
 	bool	have_skin;
+	int		num_skinned;
 }								imd2_mesh_header_t;
 
 typedef struct	imd2_matrix_s
@@ -140,7 +142,6 @@ typedef struct imd2_bone_anim_s
 {
 	// should be an imd2_matrix_t
 	float	matrix[16];
-	float	pos[3];
 }				imd2_bone_anim_t;
 
 typedef	struct imd2_bone_header_s

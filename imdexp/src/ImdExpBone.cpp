@@ -1,5 +1,7 @@
 #include <stdafx.h>
 #include <algorithm>
+#include "BIPEXP.H"
+
 //////////////////////////////////////////////////////////////////////////
 // bones importer
 //////////////////////////////////////////////////////////////////////////
@@ -12,10 +14,7 @@ int		ImdExp::RecursiveGetBoneIndex(INode *root, INode *node, int &index)
 		if (IsNodeBone(child_node))
 		{
 			if (child_node == node)
-			{
-				_log->Printf("Find bone \"%s\" == %d", child_node->GetName(), index);
 				return index;
-			}
 			index ++;
 		}
 		int bone_ret = RecursiveGetBoneIndex(root->GetChildNode(i), node, index);
@@ -47,7 +46,8 @@ bool	ImdExp::IsNodeBone(INode *node)
 		if (object->ClassID() == BONE_OBJ_CLASSID )
 			return true;
 	}
-	return false;
+	Control *controller = node->GetTMController();
+	return ( ((controller->ClassID( ) == BIPSLAVE_CONTROL_CLASS_ID) || (controller->ClassID( ) == BIPBODY_CONTROL_CLASS_ID)) && (controller->ClassID( ) != FOOTPRINT_CLASS_ID));
 }
 
 bool	ImdExp::HaveChildBone(INode *node)
@@ -82,7 +82,6 @@ void ImdExp::ImportBoneAnimation(INode *node, BoneData *bone_data)
 
 void ImdExp::RecursiveImportBoneData(INode *node, ImportedBone *bone, BoneData *bone_data)
 {
-	Loger::Get().Print("importing bone data ++");
 	// import animation.
 	for (int i = 0; i < node->NumberOfChildren(); ++i)		
 	{
@@ -108,7 +107,6 @@ void ImdExp::RecursiveImportBoneData(INode *node, ImportedBone *bone, BoneData *
 		else
 			RecursiveImportBoneData(child_node, bone, bone_data);
 	}
-	Loger::Get().Print("importing bone data --");
 }
 
 // import bone data from root node.
@@ -119,7 +117,7 @@ ImportedBone *ImdExp::ImportBoneData()
 	int	bone_count = GetNumBones(node);
 	if (bone_count == 0)
 		return 0;
-	_log->Print("++ [ImdExp::ImportBoneData]");
+	_log->Printf("++ [ImdExp::ImportBoneData] number of bones = %d", bone_count);
 	bone = new ImportedBone;
 	RecursiveImportBoneData(node, bone);
 	_log->Print("-- [ImdExp::ImportBoneData]");

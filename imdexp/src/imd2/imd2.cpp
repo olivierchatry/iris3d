@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdafx.h>
-#include "imd2.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // imd2 object file format.

@@ -92,9 +92,9 @@ BEGIN
     LTEXT           "Imd MAX Exporter @2003 - Epitech Console Laboratory.",
                     IDC_STATIC,6,295,186,8
     CONTROL         "Sample Matrix",IDC_RADIOSAMPLEMATRIX,"Button",
-                    BS_AUTORADIOBUTTON,30,78,74,10
+                    BS_AUTORADIOBUTTON,12,92,74,10
     CONTROL         "Sample Vertex",IDC_RADIOSAMPLEVERTEX,"Button",
-                    BS_AUTORADIOBUTTON,30,91,60,10
+                    BS_AUTORADIOBUTTON,12,103,60,10
     GROUPBOX        "Debug",IDC_STATIC,6,228,288,54
     CONTROL         "Open 3D Viewer when finished export.",IDC_CHECK3DVIEWER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,241,139,10
@@ -103,9 +103,6 @@ BEGIN
     CONTROL         "Open DOS Log Window (If you close it, 3DS Max will also be closed).",
                     IDC_CHECKDOSLOGWINDOW,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,12,265,234,10
-    LTEXT           "Static Frame :",IDC_STATIC,12,102,46,8
-    CONTROL         "",IDC_EDIT_STATIC,"CustEdit",WS_TABSTOP,60,102,30,10
-    CONTROL         "",IDC_SPIN_STATIC,"SpinnerControl",0x0,91,102,6,10
     CONTROL         "Export object data",IDC_CHECKEXPORTOBJECTDATA,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,12,18,84,10
     LTEXT           "Sample Matrix Animation :",IDC_STATIC,12,162,84,8
@@ -119,6 +116,9 @@ BEGIN
     CONTROL         "",IDC_TREESCENE,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | WS_TABSTOP,114,6,180,
                     126,WS_EX_CLIENTEDGE
+    LTEXT           "Static Frame :",IDC_STATIC,12,78,46,8
+    CONTROL         "",IDC_EDIT_STATIC,"CustEdit",WS_TABSTOP,60,78,30,10
+    CONTROL         "",IDC_SPIN_STATIC,"SpinnerControl",0x0,91,78,6,10
 END
 
 IDD_DIALOGLOG DIALOGEX 0, 0, 253, 226
