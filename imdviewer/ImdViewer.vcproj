@@ -90,6 +90,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3dx8.lib d3d8.lib"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -139,6 +140,9 @@
 				RelativePath=".\DialogBarBoneTree.cpp">
 			</File>
 			<File
+				RelativePath=".\DialogBarConfig.cpp">
+			</File>
+			<File
 				RelativePath=".\DialogBarMeshInfo.cpp">
 			</File>
 			<File
@@ -186,6 +190,9 @@
 				RelativePath=".\DialogBarBoneTree.h">
 			</File>
 			<File
+				RelativePath=".\DialogBarConfig.h">
+			</File>
+			<File
 				RelativePath=".\DialogBarMeshInfo.h">
 			</File>
 			<File
@@ -231,6 +238,9 @@
 			</File>
 			<File
 				RelativePath=".\res\Toolbar.bmp">
+			</File>
+			<File
+				RelativePath=".\res\toolbartools.bmp">
 			</File>
 		</Filter>
 		<Filter

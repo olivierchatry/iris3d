@@ -3,7 +3,13 @@
 
 #include "stdafx.h"
 #include "ImdViewer.h"
+#include "ImdViewerDoc.h"
+
+#include "DialogBarBoneList.h"
+#include "DialogBarMeshInfo.h"
 #include "DialogBarBoneTree.h"
+#include "DialogBarAnim.h"
+#include "DialogBarConfig.h"
 
 
 // CDialogBarBoneTree dialog

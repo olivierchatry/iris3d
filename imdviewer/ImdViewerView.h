@@ -116,12 +116,14 @@ protected:
 	std::map<int, IDirect3DTexture8* >	_textures_map;
 	//////////////////////////////////////////////////////////////////////////
 	// animation)
+	void	FillTagBuffer(VBVect3d &vb, int anim);
 	int	_current_anim;
 	void	UpdateFrame();
 	// Bones.
 	imd2_bone_file_t	*_bone;
 	std::vector<Bone>	_bone_hier;
 	VBVect3d			_vb_bone;
+	VBVect3d			_vb_tag;
 	void	RecursiveSetBone(Bone *bone, int parent_index);
     vertex3d_t *RecursiveFillVertex(std::vector<Bone> &bones, vertex3d_t *v, Bone *parent_bone);
 	void	FillBoneVertexBuffer();

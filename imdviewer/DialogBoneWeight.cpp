@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "ImdViewer.h"
 #include "DialogBoneWeight.h"
-#include ".\dialogboneweight.h"
 
 
 // CDialogBoneWeight dialog
@@ -51,9 +50,8 @@ BOOL CDialogBoneWeight::OnInitDialog()
 	imd2_mesh_t	*mesh = _object->imd2_mesh;
 	if (_object->imd2_object_header.have_skin == false)
 		return FALSE;
+	int	bone_count = 0;
 	if (_bones == 0)
-	{
-		int	bone_count = 0;
 		for (int i = 0;i < mesh->imd2_mesh_header.num_vertex; ++i)
 		{
 			imd2_skin_t	*skin = &(mesh->imd2_skin[i]);
@@ -67,20 +65,14 @@ BOOL CDialogBoneWeight::OnInitDialog()
 				}
 			}
 		}
-		for (int i = 0; i < bone_count; ++i)
-		{
-			CString oStr;
-			oStr.Format("Bone #%d", 1 + i);
-			pListCtrl->InsertColumn(1 + i, oStr, LVCFMT_LEFT, 60);
-		}
-	}
 	else
-		for (int i = 0; i < _bones->imd2_bone_file_header.bone_count; ++i)
-		{
-			CString oStr;
-			oStr.Format("Bone #%d", _bones->bones[i].imd2_bone_header.bone_index);
-			pListCtrl->InsertColumn(1 + i, oStr, LVCFMT_LEFT, 60);
-		}
+		bone_count = _bones->imd2_bone_file_header.bone_count;
+	for (int i = 0; i < bone_count; ++i)
+	{
+		CString oStr;
+		oStr.Format("Bone #%d", 1 + i);
+		pListCtrl->InsertColumn(1 + i, oStr, LVCFMT_LEFT, 60);
+	}
 	int _counter = 0;
 	for (int i = 0;i < mesh->imd2_mesh_header.num_vertex; ++i)
 	{
@@ -98,6 +90,5 @@ BOOL CDialogBoneWeight::OnInitDialog()
 			pListCtrl->SetItemText(iItem, w->bone_index + 1, oStr);
 		}
 	}
-
 	return TRUE;
 }

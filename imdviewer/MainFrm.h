@@ -34,10 +34,11 @@ public:
 	void		SetBoneFile(const char *file_path);
 
 	CDialogBarAnim	&GetAnimBar() { return m_wndAnimBar;}
+	CDialogBarConfig &GetConfigBar() {return m_wndConfigBar;}
 protected:  // control bar embedded members
 	CStatusBar			m_wndStatusBar;
 	CToolBar			m_wndToolBar;
-	CDialogBar			m_wndCameraToolBar;
+	CDialogBarConfig	m_wndConfigBar;
 	CDialogBarBoneList	m_wndBonesToolBar;
 	CDialogBarBoneTree	m_wndBoneTreeToolBar;
 	CDialogBarMeshInfo	m_wndMeshInfoToolBar;
@@ -55,6 +56,17 @@ public:
 	afx_msg void OnAnimPlay();
 	afx_msg void OnAnimStop();
 	afx_msg void OnViewWeight();
+	afx_msg void OnFileRefresh();
+	afx_msg void OnViewConfig();
+	afx_msg void OnUpdateViewConfig(CCmdUI *pCmdUI);
+	afx_msg void OnViewAnimbar();
+	afx_msg void OnUpdateViewAnimbar(CCmdUI *pCmdUI);
+	afx_msg void OnViewBonelistbar();
+	afx_msg void OnUpdateViewBonelistbar(CCmdUI *pCmdUI);
+	afx_msg void OnViewBonetreebar();
+	afx_msg void OnUpdateViewBonetreebar(CCmdUI *pCmdUI);
+	afx_msg void OnViewMeshinfo();
+	afx_msg void OnUpdateViewMeshinfo(CCmdUI *pCmdUI);
 };
 
 

@@ -9,6 +9,7 @@
 #include "DialogBarMeshInfo.h"
 #include "DialogBarBoneTree.h"
 #include "DialogBarAnim.h"
+#include "DialogBarConfig.h"
 
 #include "MainFrm.h"
 #ifdef _DEBUG
@@ -16,7 +17,7 @@
 #endif
 
 const int	grid_size = 80;
-const float grid_increment = 20.0f;
+const float grid_increment = 10.0f;
 const int	grid_primitive_count = grid_size * grid_size * 4;
 // CImdViewerView
 
@@ -175,6 +176,8 @@ void CImdViewerView::OnInitialUpdate()
 
 void CImdViewerView::UpdateScene()
 {
+	CMainFrame *pMainFrm = (CMainFrame *) AfxGetApp()->GetMainWnd();
+	ASSERT(pMainFrm != 0);
 	_d3d_device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0,0xFF,0,0xFF), 1, 0);
 	UpdateCamera();
 	UpdateFrame();
@@ -192,15 +195,27 @@ void CImdViewerView::UpdateScene()
 	_vb_grid.Draw(_d3d_device, grid_primitive_count);
 	if (_bone)
 		_vb_bone.Draw(_d3d_device, _bone->imd2_bone_file_header.bone_count);
-	for (size_t i = 0; i < _vb.size(); ++i)
+	if (_object)
 	{
-		IDirect3DTexture8	*tex = _textures_map[_textures_list[i]];
-		HRESULT hres =  _d3d_device->SetTexture(0, tex);
-		if (_object->imd2_object_header.matrix_sampling)
-			if (!_use_bone_for_animation)
-				memcpy((float *) world_object, _object->imd2_mesh[i].imd2_matrix[_current_anim].m, sizeof(float) * 16);
-		_d3d_device->SetTransform(D3DTS_WORLD, &world_object);
-		_vb[i].DrawIndexed(_d3d_device, D3DPT_TRIANGLESTRIP);
+		if (pMainFrm->GetConfigBar().DisplayTag() && _object->imd2_object_header.num_tag)
+		{
+			_d3d_device->SetTexture(0, 0);
+			DWORD value = TRUE;
+			_d3d_device->SetRenderState(D3DRS_POINTSCALEENABLE, value);
+			float	size = 10.0f;
+			_d3d_device->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&size));
+			_vb_tag.Draw(_d3d_device, _object->imd2_object_header.num_tag);
+		}
+		for (size_t i = 0; i < _vb.size(); ++i)
+		{
+			IDirect3DTexture8	*tex = _textures_map[_textures_list[i]];
+			HRESULT hres =  _d3d_device->SetTexture(0, tex);
+			if (_object->imd2_object_header.matrix_sampling)
+				if (!_use_bone_for_animation)
+					memcpy((float *) world_object, _object->imd2_mesh[i].imd2_matrix[_current_anim].m, sizeof(float) * 16);
+			_d3d_device->SetTransform(D3DTS_WORLD, &world_object);
+			_vb[i].DrawIndexed(_d3d_device, D3DPT_TRIANGLESTRIP);
+		}
 	}
 	_d3d_device->EndScene();
 	_d3d_device->Present(NULL, NULL, NULL, NULL);		
@@ -311,6 +326,7 @@ void CImdViewerView::DestroyD3D()
 {
 	_vb_bone.Deallocate();
 	_vb_grid.Deallocate();
+	_vb_tag.Deallocate();
 	for (size_t i = 0; i < _vb.size(); ++i)
 		_vb[i].Deallocate();
 	for (size_t i = 0; i < _skin_mesh.size(); ++i)
@@ -445,6 +461,21 @@ void	CImdViewerView::LoadMaterial(imd2_object_t *imd2_object, std::string &path)
 	}
 }
 
+void	CImdViewerView::FillTagBuffer(VBVect3d &vb, int anim)
+{
+	vertex3d_t	*v = _vb_tag.Lock();
+	for (int i = 0; i < _object->imd2_object_header.num_tag; ++i)
+	{
+		imd2_tag_t *tag = &(_object->imd2_tag[i]);
+		v->_color = 0xff00ff00;
+		v->_pos.x = tag->tag_data[anim].pos[0];
+		v->_pos.y = tag->tag_data[anim].pos[1];
+		v->_pos.z = tag->tag_data[anim].pos[2];
+		v++;
+	}
+	_vb_tag.Unlock();
+}
+
 void	CImdViewerView::SetImd2Object(imd2_object_t *imd2_object, std::string &path)
 {
 	_path = path;
@@ -459,7 +490,7 @@ void	CImdViewerView::SetImd2Object(imd2_object_t *imd2_object, std::string &path
 		
 		int	vertex_count = mesh->imd2_mesh_header.num_vertex;
 		_vb[i].Allocate(_d3d_device, vertex_count, D3DPT_TRIANGLESTRIP);
-		FillVertexBuffer(_vb[i], mesh, 0);
+		FillVertexBuffer(_vb[i], mesh, _current_anim);
 		int	strip_count = mesh->imd2_face.num_section;	
 		_textures_list[i] = mesh->imd2_mesh_header.material_id;
 		_vb[i].PrealocateIBList(strip_count);
@@ -479,6 +510,13 @@ void	CImdViewerView::SetImd2Object(imd2_object_t *imd2_object, std::string &path
 	}
 	LoadMaterial(imd2_object, path);
 	SetBoneAnimation(_use_bone_for_animation);
+	// tag
+	int	num_tag = _object->imd2_object_header.num_tag;
+	if (num_tag > 0)
+	{
+		_vb_tag.Allocate(_d3d_device, num_tag, D3DPT_POINTLIST);
+		FillTagBuffer(_vb_tag, _current_anim);
+	}
 }
 
 void	CImdViewerView::RecursiveSetBone(Bone *bone, int parent_index)
@@ -543,7 +581,7 @@ vertex3d_t *CImdViewerView::RecursiveFillVertex(std::vector<Bone> &bones, vertex
 		if (_object)
 		{
 			D3DXMATRIX	object_matrix(_object->imd2_mesh[0].imd2_matrix[0].m);
-			D3DXMatrixMultiply(	&(_matrix[bones[i].bone_index]), 
+			D3DXMatrixMultiply(&(_matrix[bones[i].bone_index]), 
 								&(_matrix[bones[i].bone_index]), 
 								&object_matrix);
 		}
@@ -607,6 +645,9 @@ void	CImdViewerView::SkinnedAnimation()
 			dest[vi]._pos.x += (trans.x + bone_pos.x) * skin.weight;
 			dest[vi]._pos.y += (trans.y + bone_pos.y) * skin.weight;
 			dest[vi]._pos.z += (trans.z + bone_pos.z) * skin.weight;
+/*			dest[vi]._pos.x += (trans.x) * skin.weight;
+			dest[vi]._pos.y += (trans.y) * skin.weight;
+			dest[vi]._pos.z += (trans.z) * skin.weight;*/
 			continue;
 		}
 		_vb[i].Unlock();
@@ -632,6 +673,8 @@ void	CImdViewerView::UpdateFrame()
 					imd2_mesh_t	*mesh = &(_object->imd2_mesh[i]);
 					FillVertexBuffer(_vb[i], mesh, _current_anim);
 				}
+				if (_object->imd2_object_header.num_tag)
+					FillTagBuffer(_vb_tag, _current_anim);
 			}
 		}
 		else
@@ -643,3 +686,4 @@ void	CImdViewerView::UpdateFrame()
 	}
 }
 
+	

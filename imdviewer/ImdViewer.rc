@@ -38,6 +38,7 @@ IDI_ICONREMOVE          ICON                    "res\\icon1.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_TOOLS               BITMAP                  "res\\toolbartools.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -47,11 +48,17 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDR_MAINFRAME TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_REFRESH
     SEPARATOR
     BUTTON      ID_BONES_OPEN
     SEPARATOR
     BUTTON      ID_APP_ABOUT
     BUTTON      ID_VIEW_WEIGHT
+END
+
+IDR_TOOLS TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_BUTTON32787
 END
 
 
@@ -65,6 +72,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "Refresh",                     ID_FILE_REFRESH
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
@@ -74,6 +82,12 @@ BEGIN
     BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM SEPARATOR
+        MENUITEM "Config",                      ID_VIEW_CONFIG
+        MENUITEM "Anim Bar",                    ID_VIEW_ANIMBAR
+        MENUITEM "Bone List Bar",               ID_VIEW_BONELISTBAR
+        MENUITEM "Bone Tree Bar",               ID_VIEW_BONETREEBAR
+        MENUITEM "Mesh Info",                   ID_VIEW_MESHINFO
     END
     POPUP "Bones"
     BEGIN
@@ -133,16 +147,20 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
-IDD_DIALOGCAMERACONFIG DIALOGEX 0, 0, 136, 58
+IDD_DIALOGCAMERACONFIG DIALOGEX 0, 0, 136, 74
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Forward/ Backward step :",IDC_STATIC,6,6,84,8
     LTEXT           "Turn step :",IDC_STATIC,54,24,36,8
     LTEXT           "Straffe step :",IDC_STATIC,48,42,44,8
-    EDITTEXT        IDC_EDITFORWARDSTEP,96,6,36,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDITTURNSTEP,96,24,36,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDITSTRAFFESTEP,96,42,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITFORWARDSTEP,96,6,36,12,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_EDITTURNSTEP,96,24,36,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_EDITSTRAFFESTEP,96,42,36,12,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CONTROL         "Display TAG",IDC_CHECKDISPLAYTAG,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,6,60,54,10
 END
 
 IDD_DIALOGBONELIST DIALOGEX 0, 0, 136, 106
@@ -155,12 +173,12 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,7,7,93,10
 END
 
-IDD_DIALOGMESHINFO DIALOGEX 0, 0, 136, 113
+IDD_DIALOGMESHINFO DIALOGEX 0, 0, 430, 135
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_LISTINFO,"SysListView32",LVS_ALIGNLEFT | 
-                    WS_TABSTOP,7,7,121,99,WS_EX_CLIENTEDGE
+                    WS_TABSTOP,7,7,415,121,WS_EX_CLIENTEDGE
 END
 
 IDD_DIALOGBONETREE DIALOGEX 0, 0, 136, 95
@@ -244,7 +262,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 129
         TOPMARGIN, 7
-        BOTTOMMARGIN, 51
+        BOTTOMMARGIN, 67
     END
 
     IDD_DIALOGBONELIST, DIALOG
@@ -258,9 +276,9 @@ BEGIN
     IDD_DIALOGMESHINFO, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 128
+        RIGHTMARGIN, 422
         TOPMARGIN, 7
-        BOTTOMMARGIN, 106
+        BOTTOMMARGIN, 128
     END
 
     IDD_DIALOGBONETREE, DIALOG
@@ -390,6 +408,17 @@ STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BONES_OPEN           "Open a bones description file\nOpen bones file"
+    ID_VIEW_WEIGHT          "Display mesh weight informations\nMesh weight"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_REFRESH         "Reload current file\nRefresh"
 END
 
 #endif    // English (U.S.) resources

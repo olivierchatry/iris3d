@@ -60,6 +60,8 @@ void	CDialogBarMeshInfo::DisplayImd2Info(imd2_object_t *object)
 	ASSERT(pListCtrl != 0);
 	if (object != 0)
 	{
+		CRect	oRect;
+		pListCtrl->GetClientRect(oRect);
 		pListCtrl->DeleteAllItems();
 		pListCtrl->DeleteColumn(0);
 		pListCtrl->DeleteColumn(1);
@@ -70,8 +72,8 @@ void	CDialogBarMeshInfo::DisplayImd2Info(imd2_object_t *object)
 		CString	oStr;
 		style = style | LVS_REPORT ;
 		SetWindowLong(pListCtrl->GetSafeHwnd(), GWL_STYLE, style);
-		pListCtrl->InsertColumn(0, "Information", LVCFMT_LEFT, 70);
-		pListCtrl->InsertColumn(1, "Value", LVCFMT_LEFT, 70 + 36);
+		pListCtrl->InsertColumn(0, "Information", LVCFMT_LEFT, oRect.Width() / 2);
+		pListCtrl->InsertColumn(1, "Value", LVCFMT_LEFT, oRect.Width() / 2);
 		InsertInformation("Name", object->imd2_object_header.name, "Name of the imd object.", pListCtrl);
 		oStr.Format("%d", object->imd2_object_header.num_mesh);
 		InsertInformation("Number of mesh", oStr.GetBuffer(), "Number of mesh in the imd object.", pListCtrl);

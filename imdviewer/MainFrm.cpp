@@ -9,8 +9,10 @@
 #include "DialogBarMeshInfo.h"
 #include "DialogBarBoneTree.h"
 #include "DialogBarAnim.h"
+#include "DialogBarConfig.h"
 #include "DialogBoneWeight.h"
 #include "MainFrm.h"
+#include ".\mainfrm.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -27,6 +29,17 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_ANIM_PLAY, OnAnimPlay)
 	ON_COMMAND(ID_ANIM_STOP, OnAnimStop)
 	ON_COMMAND(ID_VIEW_WEIGHT, OnViewWeight)
+	ON_COMMAND(ID_FILE_REFRESH, OnFileRefresh)
+	ON_COMMAND(ID_VIEW_CONFIG, OnViewConfig)
+	ON_COMMAND(ID_VIEW_ANIMBAR, OnViewAnimbar)
+	ON_COMMAND(ID_VIEW_BONELISTBAR, OnViewBonelistbar)
+	ON_COMMAND(ID_VIEW_BONETREEBAR, OnViewBonetreebar)
+	ON_COMMAND(ID_VIEW_MESHINFO, OnViewMeshinfo)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_CONFIG, OnUpdateViewConfig)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_ANIMBAR, OnUpdateViewAnimbar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_BONELISTBAR, OnUpdateViewBonelistbar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_BONETREEBAR, OnUpdateViewBonetreebar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_MESHINFO, OnUpdateViewMeshinfo)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -69,8 +82,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-	if (!m_wndCameraToolBar.Create(this, IDD_DIALOGCAMERACONFIG, CBRS_TOP | CBRS_GRIPPER 
-		| CBRS_FLYBY, IDD_DIALOGCAMERACONFIG))
+	if (!m_wndConfigBar.Create(this, CDialogBarConfig::IDD, CBRS_TOP | CBRS_GRIPPER 
+		| CBRS_FLYBY, CDialogBarConfig::IDD))
 	{
 		TRACE0("Failed to create dialogbar\n");
 		return -1;      // fail to create
@@ -112,19 +125,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndAnimBar.SetWindowText("Animator");
 	m_wndMeshInfoToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndMeshInfoToolBar.SetWindowText("Mesh information toolbar");
-	m_wndCameraToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndCameraToolBar.SetWindowText("Camera toolbar");
+	m_wndConfigBar.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndConfigBar.SetWindowText("Config toolbar");
+	m_wndConfigBar.SetDispalyTag();
+	m_wndConfigBar.SetWalkSpeed(1);
+	m_wndConfigBar.SetTurnSpeed(1);
+	m_wndConfigBar.SetStraffeSpeed(1);
 	m_wndBonesToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndBonesToolBar.SetWindowText("Bones toolbar");
 	m_wndBoneTreeToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndBoneTreeToolBar.SetWindowText("Bones treeview");
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
-	DockControlBar(&m_wndCameraToolBar, AFX_IDW_DOCKBAR_LEFT);
-	DockControlBarBottomOf(&m_wndAnimBar, &m_wndCameraToolBar);
+	DockControlBar(&m_wndConfigBar, AFX_IDW_DOCKBAR_LEFT);
+	DockControlBarBottomOf(&m_wndAnimBar, &m_wndConfigBar);
 	DockControlBarBottomOf(&m_wndBonesToolBar, &m_wndAnimBar);
 	DockControlBarBottomOf(&m_wndBoneTreeToolBar, &m_wndBonesToolBar);
-	DockControlBar(&m_wndMeshInfoToolBar, AFX_IDW_DOCKBAR_RIGHT);
+	DockControlBar(&m_wndMeshInfoToolBar, AFX_IDW_DOCKBAR_FLOAT);
 	ilInit();
 	iluInit();
 	ilutInit();
@@ -202,6 +219,7 @@ void	CMainFrame::SetImd2Object(imd2_object_t *imd2_object, std::string &path)
 {
 	CImdViewerView	*pView;
 	pView = (CImdViewerView *) this->GetActiveView();
+	ASSERT (pView != 0);
 	pView->SetImd2Object(imd2_object, path);
 	m_wndMeshInfoToolBar.DisplayImd2Info(imd2_object);
 	_object_file = imd2_object;
@@ -253,4 +271,73 @@ void CMainFrame::OnViewWeight()
 	CDialogBoneWeight	oDialog(_object_file, _bone_file);
 	oDialog.DoModal();
 	// TODO: Add your command handler code here
+}
+
+void CMainFrame::OnFileRefresh()
+{
+	CImdViewerView	*pView;
+	pView = (CImdViewerView *) this->GetActiveView();
+	ASSERT (pView != 0);
+	pView->ResetDevice();
+	m_wndMeshInfoToolBar.DisplayImd2Info(_object_file);
+}
+
+void CMainFrame::OnViewConfig()
+{
+	BOOL bShow = m_wndConfigBar.IsVisible();
+	ShowControlBar(&m_wndConfigBar, !bShow, FALSE);	
+}
+
+void CMainFrame::OnUpdateViewConfig(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	pCmdUI->SetCheck(m_wndConfigBar.IsVisible());
+}
+
+void CMainFrame::OnViewAnimbar()
+{
+	BOOL bShow = m_wndAnimBar.IsVisible();
+	ShowControlBar(&m_wndAnimBar, !bShow, FALSE);	
+}
+
+void CMainFrame::OnUpdateViewAnimbar(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	pCmdUI->SetCheck(m_wndAnimBar.IsVisible());
+}
+
+void CMainFrame::OnViewBonelistbar()
+{
+	BOOL bShow = m_wndBonesToolBar.IsVisible();
+	ShowControlBar(&m_wndBonesToolBar, !bShow, FALSE);	
+}
+
+void CMainFrame::OnUpdateViewBonelistbar(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	pCmdUI->SetCheck(m_wndBonesToolBar.IsVisible());
+}
+
+void CMainFrame::OnViewBonetreebar()
+{
+	BOOL bShow = m_wndBoneTreeToolBar.IsVisible();
+	ShowControlBar(&m_wndBoneTreeToolBar, !bShow, FALSE);	
+}
+
+void CMainFrame::OnUpdateViewBonetreebar(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	pCmdUI->SetCheck(m_wndBoneTreeToolBar.IsVisible());
+}
+
+void CMainFrame::OnViewMeshinfo()
+{
+	BOOL bShow = m_wndMeshInfoToolBar.IsVisible();
+	ShowControlBar(&m_wndMeshInfoToolBar, !bShow, FALSE);	
+}
+
+void CMainFrame::OnUpdateViewMeshinfo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable();
+	pCmdUI->SetCheck(m_wndMeshInfoToolBar.IsVisible());
 }

@@ -48,6 +48,7 @@
 #define ASSERT_VIEWER(value, str)  {ASSERT(value);}
 
 #include "vb_wrap.h"
+#include "resource.h"
 
 #endif // _AFX_NO_AFXCMN_SUPPORT
 

@@ -8,6 +8,7 @@
 #include "DialogBarMeshInfo.h"
 #include "DialogBarBoneTree.h"
 #include "DialogBarAnim.h"
+#include "DialogBarConfig.h"
 
 #include "MainFrm.h"
 
