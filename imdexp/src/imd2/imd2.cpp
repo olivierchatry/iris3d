@@ -39,22 +39,17 @@ imd2_object_t	*load_imd2(const char *file_name)
 	}
 	if (pImdObject->imd2_object_header.num_tag > 0)
 	{
-		if (pImdObject->imd2_object_header.num_tag > 0)
-		{
-			for (iIndex = 0; iIndex < pImdObject->imd2_object_header.num_tag ; iIndex ++)
-			{
-				int	size;
-				fread(pImdObject->imd2_tag[iIndex].name, sizeof(char), IMD2_MAX_NAME, file);
-				fread(&size, sizeof(size), 1, file);
-				pImdObject->imd2_tag[iIndex].user_data = new char[size];
-				fread(pImdObject->imd2_tag[iIndex].user_data, sizeof(char), size, file);
-				pImdObject->imd2_tag[iIndex].tag_data = new imd2_tag_data_t[pImdObject->imd2_object_header.num_anim];
-				fread(pImdObject->imd2_tag[iIndex].tag_data, sizeof(imd2_tag_t), pImdObject->imd2_object_header.num_anim , file);
-			}
-		}
-
 		pImdObject->imd2_tag = new imd2_tag_t[pImdObject->imd2_object_header.num_tag];
-		fread(pImdObject->imd2_tag, sizeof(imd2_tag_t), pImdObject->imd2_object_header.num_tag * pImdObject->imd2_object_header.num_anim, file);
+		for (iIndex = 0; iIndex < pImdObject->imd2_object_header.num_tag ; iIndex ++)
+		{
+			int	size;
+			fread(pImdObject->imd2_tag[iIndex].name, sizeof(char), IMD2_MAX_NAME, file);
+			fread(&size, sizeof(size), 1, file);
+			pImdObject->imd2_tag[iIndex].user_data = new char[size];
+			fread(pImdObject->imd2_tag[iIndex].user_data, sizeof(char), size, file);
+			pImdObject->imd2_tag[iIndex].tag_data = new imd2_tag_data_t[pImdObject->imd2_object_header.num_anim];
+			fread(pImdObject->imd2_tag[iIndex].tag_data, sizeof(imd2_tag_data_t), pImdObject->imd2_object_header.num_anim , file);
+		}
 	}
 	if (pImdObject->imd2_object_header.num_light > 0)
 	{
@@ -139,7 +134,7 @@ void	save_imd2(imd2_object_t *pImdObject, const char *file_name)
 			size_t	size = strlen(pImdObject->imd2_tag[iIndex].user_data) + 1; // include '\0'
 			fwrite(&size, sizeof(size), 1, file);
 			fwrite(pImdObject->imd2_tag[iIndex].user_data, sizeof(char), size, file);
-			fwrite(pImdObject->imd2_tag[iIndex].tag_data, sizeof(imd2_tag_t), pImdObject->imd2_object_header.num_anim , file);
+			fwrite(pImdObject->imd2_tag[iIndex].tag_data, sizeof(imd2_tag_data_t), pImdObject->imd2_object_header.num_anim , file);
 		}
 	}
 	// next, we write static light data

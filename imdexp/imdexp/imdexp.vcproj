@@ -35,7 +35,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="core.lib geom.lib maxutil.lib mesh.lib odbc32.lib odbccp32.lib comctl32.lib d3dx8.lib d3d8.lib"
 				ShowProgress="0"
-				OutputFile="d:\3dsmax5\plugins\imdexp.dle"
+				OutputFile="c:\3dsmax5\plugins\imdexp.dle"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../lib/devil/lib"

@@ -225,7 +225,7 @@ ImportedMesh *ImdExp::ImportTriangularObject(INode *node, TriObject *tri_object,
 		bool		delete_mesh;
 		TriObject	*triobj = GetTriObjectFromNode(node, i * inc,delete_mesh);
 		Mesh		&the_mesh = triobj->GetMesh();
-		Matrix3		m  =  node->GetObjTMAfterWSM(i * inc);	
+		Matrix3		m  =  FixCoordSys(node->GetObjTMAfterWSM(i * inc));	
 		MeshData	&mesh_data = imported_mesh->_mesh_data[mesh_index++];
 		MeshMap&	mesh_map = the_mesh.Map(1);
 

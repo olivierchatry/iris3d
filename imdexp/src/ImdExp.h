@@ -95,7 +95,7 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	// imd writer fct.
 	//////////////////////////////////////////////////////////////////////////
-	size_t	CountElementOf(element_type type);
+	unsigned short	CountElementOf(element_type type);
 	void	SaveObjectFile(const TCHAR *c_file_name);
 	void SaveBoneFile(const TCHAR *c_file_name, ImportedBone *bones);
 	void	ExportImd2Material(imd2_object_t &object, std::string &path);
@@ -106,6 +106,9 @@ protected:
 	void		ExportImd2Mesh(imd2_object_t &object);
 	void		ExportImd2Tag(imd2_object_t &object);
 	void		RecursiveSaveBone(imd2_bone_file_t *imd2_bone, BoneData *data, int &index, int parent = -1);
+	Point3		&FixCoordSys(Point3 &pnt);
+	Matrix3		&FixCoordSys(Matrix3 &tm);
+
 	//////////////////////////////////////////////////////////////////////////
 	// importer fct
 	//////////////////////////////////////////////////////////////////////////

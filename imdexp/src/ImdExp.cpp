@@ -1,3 +1,4 @@
+
 /********************************************************************
 created:	2003/02/03
 created:	4:2:2003   20:17
@@ -245,10 +246,10 @@ void	PrintBone(BoneData *data, std::string tab)
 		PrintBone(&(*it), tab);
 }
 
-size_t	ImdExp::CountElementOf(element_type type)
+unsigned short	ImdExp::CountElementOf(element_type type)
 {
 	element_list_it_t	it;
-	int					count = 0;
+	unsigned short		count = 0;
 
 	for (it = _elements.begin(); it != _elements.end(); ++it)
 	{
@@ -260,19 +261,19 @@ size_t	ImdExp::CountElementOf(element_type type)
 
 std::string	ImdExp::GetFilePath(std::string str)
 {
-	int	pos_sep = str.find_last_of("\\/");
+	size_t	pos_sep = str.find_last_of("\\/");
 	return str.substr(0, pos_sep + 1);
 }
 
 std::string	ImdExp::GetFileName(std::string str)
 {
-	int	pos_sep = str.find_last_of("\\/") + 1;
+	size_t	pos_sep = str.find_last_of("\\/") + 1;
 	return str.substr(pos_sep);
 }
 std::string	ImdExp::GetFileNameWithoutExtension(std::string str)
 {
-	int	pos_sep = str.find_last_of("\\/") + 1;
-	int	pos_point = str.find_last_of(".");
+	size_t	pos_sep = str.find_last_of("\\/") + 1;
+	size_t	pos_point = str.find_last_of(".");
 	return str.substr(pos_sep,  pos_point - pos_sep);	
 }
 
@@ -298,7 +299,7 @@ void	ImdExp::ExportImd2Material(imd2_object_t &object, std::string &path)
 	{
 		MaterialData	*material_data = *it;
 		char			*file_name_path;
-		memset(object.imd2_material[count].file_name, IMD2_MAX_NAME, 0);
+		memset(object.imd2_material[count].file_name, 0, IMD2_MAX_NAME);
 		file_name_path = material_data->_diffuse_map;
 		if (file_name_path == 0)
 			file_name_path = material_data->_env_map;
@@ -367,18 +368,18 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 		{
 			ImportedMesh *imesh = (ImportedMesh *) el;
 			strncpy(mesh->imd2_mesh_header.name, imesh->_name.c_str(), IMD2_MAX_NAME - 1);
-			int vertex_count = imesh->_mesh_data[0]._vertex.size();
+			size_t vertex_count = imesh->_mesh_data[0]._vertex.size();
 			mesh->imd2_mesh_header.num_vertex = vertex_count;
 			object.imd2_object_header.have_skin |= imesh->_skin != 0;
 			mesh->imd2_mesh_header.have_skin = imesh->_skin != 0;
 			mesh->user_data = new char [imesh->_user_properties.size() + 1];
 			strcpy(mesh->user_data, imesh->_user_properties.c_str());
 			mesh->imd2_mesh_header.material_id = (int) imesh->_material;
-			mesh->imd2_face.num_section = imesh->_strip.size();
+			mesh->imd2_face.num_section = (unsigned short) imesh->_strip.size();
 			mesh->imd2_face.imd2_section = new imd2_face_section_t[mesh->imd2_face.num_section];
 			for (int index_strip = 0; index_strip < mesh->imd2_face.num_section; ++index_strip)
 			{
-				mesh->imd2_face.imd2_section[index_strip].num_indice = imesh->_strip[index_strip]._face_index.size();
+				mesh->imd2_face.imd2_section[index_strip].num_indice = (unsigned short) imesh->_strip[index_strip]._face_index.size();
 				mesh->imd2_face.imd2_section[index_strip].indice = new unsigned short[mesh->imd2_face.imd2_section[index_strip].num_indice];
 				for (size_t index_face = 0; index_face < imesh->_strip[index_strip]._face_index.size(); ++index_face)
 					mesh->imd2_face.imd2_section[index_strip].indice[index_face] = imesh->_strip[index_strip]._face_index[index_face]; 	
@@ -391,7 +392,7 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 				mesh->imd2_matrix = 0;
 				// save object matrix.
 				for (int index_anim = 0; index_anim < object.imd2_object_header.num_anim; ++index_anim)
-					for (int index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
+					for (size_t index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
 					{
 						int offset = vertex_count * index_anim + index_vertex;
 						MeshData &mesh_data = imesh->_mesh_data[index_anim];
@@ -411,7 +412,7 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 			{
 				mesh->imd2_vertex = new imd2_vertex_t[vertex_count];
 				mesh->imd2_matrix = new imd2_matrix_t[object.imd2_object_header.num_anim];
-				for (int index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
+				for (size_t index_vertex = 0; index_vertex < vertex_count; ++index_vertex)
 				{
 					memcpy(mesh->imd2_vertex[index_vertex].normal, imesh->_mesh_data[0]._normal[index_vertex], sizeof(float) * 3);
 					memcpy(mesh->imd2_vertex[index_vertex].pos, imesh->_mesh_data[0]._vertex[index_vertex], sizeof(float) * 3);
@@ -483,7 +484,7 @@ void	ImdExp::ExportImd2Tag(imd2_object_t &object)
 	// allocate data
 	object.imd2_tag = new imd2_tag_t[object.imd2_object_header.num_tag];
 	imd2_tag_t *tag = object.imd2_tag;
-	memset(tag, 0, object.imd2_object_header.num_mesh * sizeof(imd2_tag_t));
+	memset(tag, 0, object.imd2_object_header.num_tag * sizeof(imd2_tag_t));
 	for (it = _elements.begin(); it != _elements.end(); ++it)
 	{
 		ImportedElements *el = *it;
@@ -528,15 +529,53 @@ void	ImdExp::SaveObjectFile(const TCHAR *c_file_name)
 		object->imd2_object_header.num_material = 0;
 	else
 	{
-		object->imd2_object_header.num_material = _material_list->_material_data.size();
+		object->imd2_object_header.num_material = (unsigned short) _material_list->_material_data.size();
 		object->imd2_material = new imd2_material_t[object->imd2_object_header.num_material];
 		ExportImd2Material(*object, path);
 	}
 	object->imd2_object_header.num_tag = CountElementOf(tag_element);
-	object->imd2_object_header.num_light = CountElementOf(light_element);
+	object->imd2_object_header.num_light = 0; // ountElementOf(light_element); // TODO.
 	ExportImd2Mesh(*object);
+	ExportImd2Tag(*object);
 	save_imd2(object, c_file_name);
 	free_imd2(object);
+}
+
+int	ImdExp::GetNumBones(INode *node)
+{
+	int count = 0;
+	if(IsNodeBone(node))
+		count += 1;
+	for(int i = 0; i < node->NumberOfChildren(); i++)
+		count += GetNumBones(node->GetChildNode(i));
+	return count;
+}
+
+Matrix3& ImdExp::FixCoordSys(Matrix3 &tm)
+{
+	// swap 2nd and 3rd rows
+	Point3 row = tm.GetRow(1);
+	tm.SetRow(1, tm.GetRow(2));
+	tm.SetRow(2, row);
+
+	// swap 2nd and 3rd columns
+	Point4 column = tm.GetColumn(1);
+	tm.SetColumn(1, tm.GetColumn(2));
+	tm.SetColumn(2, column);
+
+	tm.SetRow(0, tm.GetRow(0));
+	tm.SetColumn(0, tm.GetColumn(0));
+
+	return tm;
+}
+
+Point3& ImdExp::FixCoordSys(Point3 &pnt)
+{
+	float	tmp;
+	tmp = pnt.y;
+	pnt.y = pnt.z;
+	pnt.z = tmp;
+	return pnt;
 }
 
 void	ImdExp::RecursiveSaveBone(imd2_bone_file_t *imd2_bone, BoneData *data, int &index, int parent)

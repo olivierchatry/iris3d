@@ -1,26 +1,11 @@
 #include <stdafx.h>
-
+#include <algorithm>
 //////////////////////////////////////////////////////////////////////////
 // bones importer
 //////////////////////////////////////////////////////////////////////////
 int		ImdExp::RecursiveGetBoneIndex(INode *root, INode *node, int &index)
 {
 	int	bone_index = -1;
-/*
-	if (IsNodeBone(root))
-	{
-		bone_index = index;
-		index ++;
-		if (root == node)
-			return bone_index;
-	}
-	for(int i = 0; i < root->NumberOfChildren(); i++)
-	{
-		int bone_index = RecursiveGetBoneIndex(root->GetChildNode(i), node, index);
-		if (bone_index >= 0)
-			return bone_index;
-	}
-*/
 	for (int i = 0; i < root->NumberOfChildren(); i++)
 	{
 		INode *child_node = root->GetChildNode(i);
@@ -74,35 +59,24 @@ bool	ImdExp::HaveChildBone(INode *node)
 }
 
 
-int	ImdExp::GetNumBones(INode *node)
-{
-	int count = 0;
-	if(IsNodeBone(node))
-		count += 1;
-	for(int i = 0; i < node->NumberOfChildren(); i++)
-		count += GetNumBones(node->GetChildNode(i));
-	return count;
-}
 
 
 void ImdExp::ImportBoneAnimation(INode *node, BoneData *bone_data)
 {
+	Matrix3 baseTM = node->GetNodeTM(0);
+	baseTM.Invert();
 	TimeValue inc = GetTicksPerFrame();
-	for (int i = _plugin_config._begin_bone_frame; i <= _plugin_config._end_bone_frame; ++i)
+	for (int i = _plugin_config._begin_bone_frame; i <=
+		_plugin_config._end_bone_frame; ++i)
 	{
-		TimeValue	tv = i * inc;
+		TimeValue tv = i * inc;
 		bone_data->_animation.push_back(BoneAnim());
-		BoneAnim	&bone_anim = bone_data->_animation.back();
-		Matrix3 nodeTM = node->GetNodeTM(tv);
-		INode *parent = node->GetParentNode();
-		Matrix3 parentTM = parent->GetNodeTM(tv);
-		Matrix3 localTM = nodeTM*Inverse(parentTM);
-		bone_anim.matrix = nodeTM;
-		bone_anim.matrix.NoScale();
-		bone_anim.pos = bone_anim.matrix.GetTrans();
-		bone_anim.matrix.NoTrans();
+		BoneAnim &bone_anim = bone_data->_animation.back();
+		bone_anim.matrix = FixCoordSys(baseTM * node->GetNodeTM(tv));
+		bone_anim.pos = Point3(0.0f, 0.0f, 0.0f);
 	}
 }
+
 
 void ImdExp::RecursiveImportBoneData(INode *node, ImportedBone *bone, BoneData *bone_data)
 {

@@ -24,12 +24,13 @@ ImportedTag *ImdExp::ImportTagObject(INode *node, TriObject *tri_object, ObjectS
 	int				tag_index = 0;
 	if (imported_tag == 0)
 		return 0;
+	imported_tag->_name = node->GetName();
 	imported_tag->_tag_data.resize(_plugin_config._end_frame - _plugin_config._begin_frame + 1);
 	TimeValue		inc = GetTicksPerFrame();
 	for (TimeValue i = _plugin_config._begin_frame; i <= _plugin_config._end_frame; i ++)
 	{
 		AffineParts	ap;
-		Matrix3		m  = offset_matrix * node->GetNodeTM(i * inc) * Inverse(node->GetParentTM(i * inc));
+		Matrix3		m  = FixCoordSys(offset_matrix * node->GetNodeTM(i * inc) * Inverse(node->GetParentTM(i * inc)));
 		TagData		*tag_data = new TagData;	
 		imported_tag->_tag_data[tag_index ++] = tag_data;
 		tag_data->_pos = m * GetCenter(mesh);
