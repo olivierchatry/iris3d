@@ -30,13 +30,16 @@
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/fixed:no
+
+"
 				AdditionalDependencies="opengl32.lib glu32.lib ./devil/lib/devil.lib ./devil/lib/ilu.lib ./devil/lib/ilut.lib"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				TargetMachine="1"/>

@@ -11,6 +11,7 @@
 
 #define	IMD2_MAX_NAME			64
 #define	IMD2_MAGIC_TAG			"IM2\0"
+#define	IMD2_BONE_MAGIC_TAG			"IB2\0"
 
 
 typedef	struct	imd2_object_header_s
@@ -21,6 +22,9 @@ typedef	struct	imd2_object_header_s
 	unsigned	short	num_material;
 	unsigned	short	num_tag;
 	unsigned	short	num_light;
+	bool				have_skin;
+	bool				matrix_sampling;
+	int					num_bones;
 }								imd2_object_header_t;
 
 
@@ -81,13 +85,20 @@ typedef struct	imd2_mesh_header_s
 	char	name[IMD2_MAX_NAME];
 	short	num_vertex;
 	int		material_id;
-bool		have_skin;
+	bool	have_skin;
+	int		num_skinned;
 }								imd2_mesh_header_t;
+
+typedef struct	imd2_matrix_s
+{
+	float	m[16];
+}				imd2_matrix_t;
 
 typedef struct	imd2_mesh_s
 {
 	imd2_mesh_header_t	    imd2_mesh_header;
 	imd2_vertex_t			*imd2_vertex;
+	imd2_matrix_t			*imd2_matrix;
 	imd2_face_t				imd2_face;
 	imd2_skin_t				*imd2_skin;
 	char					*user_data;     // user data.
@@ -118,11 +129,49 @@ typedef	struct	imd2_object_s
 	imd2_light_t				*imd2_light;
 }				imd2_object_t;							
 
-
-
+//////////////////////////////////////////////////////////////////////////
+// imd2 mesh file format.
 imd2_object_t	*load_imd2(const char *file_name);
 void			save_imd2(imd2_object_t *pImdObject, const char *file_name);
 void			free_imd2(imd2_object_t *pImdObject);
 unsigned long	sizeof_imd2(imd2_object_t *pImdObject);
+
+//////////////////////////////////////////////////////////////////////////
+// imd2 bones file format.
+typedef struct imd2_bone_anim_s
+{
+	// should be an imd2_matrix_t
+	float	matrix[16];
+}				imd2_bone_anim_t;
+
+typedef	struct imd2_bone_header_s
+{
+	char	name[IMD2_MAX_NAME];
+	int		bone_index;
+	int		bone_parent;
+}				imd2_bone_header_t;
+
+typedef struct imd2_bone_s
+{
+	imd2_bone_header_t	imd2_bone_header;
+	imd2_bone_anim_t	*imd2_bone_anim;
+}				imd2_bone_t;
+
+typedef struct imd2_bone_file_header_s
+{
+	int			bone_count;
+	int			anim_count;	
+}				imd2_bone_file_header_t;
+
+typedef	struct imd2_bone_file_s
+{
+	imd2_bone_file_header_t	imd2_bone_file_header;
+	imd2_bone_t				*bones;
+}				imd2_bone_file_t;
+
+imd2_bone_file_t	*load_imd2_bone(const char *file_name);
+void				save_imd2_bone(imd2_bone_file_t *imd2_bones, const char *file_name);
+void				free_imd2_bone(imd2_bone_file_t *imd2_bones);
+unsigned long		sizeof_imd2_bone(imd2_bone_file_t *imd2_bones);
 
 #endif

@@ -1,6 +1,6 @@
 /*********************************************************
 **	File name : IrisManualObject.cpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **	Date of creation: 01/07/2002
 **	Author : Olivier Chatry - Epitech Console Laboratory
 **          (http://www.epitech.net/labconsole/)
@@ -9,33 +9,47 @@
 #include "Iris.hpp"
 
 void	IrisManualObject::PrecalculateBoundingSphere()
-{
-    vect3d	center(0.0, 0.0, 0.0);
-    for (unsigned i = 0; i < _count; ++i)
-        center += _vertex_buffer[i] / (float) _count;
+{ 
+    vect3d	center(0.0f, 0.0f, 0.0f);
+	uint32	i = _count;  
+	vect3d	*v = _vertex_buffer;
+	while (i--)
+	{
+        center += *_vertex_buffer / (float) _count;
+		v ++;
+	}
     _center = center;
-    for (unsigned j = 0; j < _count; ++j)
+	v = _vertex_buffer;
+    i = _count;
+	while (i--)
     {
-        vect3d tmp = (center - _vertex_buffer[j]);
+        vect3d	tmp = (center - *_vertex_buffer);
         vect3d	vect(tmp._x, tmp._y, tmp._z);
         if (vect.Magnitude() > _radius)
             _radius = vect.Magnitude();
+		v ++;
     }
 }
 
 void	IrisManualObject::Precalculate2D()
 {
-    for (unsigned i = 0; i < _count; ++i)
+    uint i = _count;
+	vertex2dtl	*v2d = _2d_vertex;
+	vect3d		*v3d = _vertex_buffer;
+	while (i --)
     {
-        _2d_vertex[i].x = _vertex_buffer[i]._x;
-        _2d_vertex[i].y = _vertex_buffer[i]._y;
-        _2d_vertex[i].z = _vertex_buffer[i]._z;
+        v2d->x = v3d->_x;
+        v2d->y = v3d->_y;
+        v2d->z = v3d->_z;
+		v2d ++;
+		v3d ++;
     }
 }
 
-void	IrisManualObject::Delete()
+void	IrisManualObject::Destroy()
 {
-    if (_vertex_buffer)
+	printf("[INFO] Deleting manual object\n");
+	if (_vertex_buffer)
         delete [] _vertex_buffer;
     if (_trans_vertex)
         delete [] _trans_vertex;
@@ -49,6 +63,11 @@ void	IrisManualObject::Delete()
         delete [] _trans_normal;
     if (_color)
         delete [] _color;
+	if (_material)
+	{
+		printf("[INFO] Deleting material '%s'\n", _material->GetTexture(0)->GetFileName());
+		IrisContext::Get().GetMaterialManager().Unload(_material);
+	}
     _color	= NULL;
     _normal = NULL;
     _trans_normal = NULL;
@@ -80,7 +99,7 @@ void	IrisManualObject::Allocate(unsigned int count)
 
 void	IrisManualObject::TransformAndLightAndDraw()
 {
-    IrisContext		&context = IrisContext::Get();
+    static IrisContext		&context = IrisContext::Get();
     // normal tranfo
     // 3d convertion
     if (_clipped == IrisFrustrum::outside)
@@ -98,79 +117,45 @@ void	IrisManualObject::TransformAndLightAndDraw()
         context.GetLightingPipeline().Compute(_trans_vertex, _2d_vertex , _trans_normal, _count, _color);
         context.GetGeometryPipeline().LoadTrasformationMatrix();
         context.ProcessPrimitive(_trans_vertex, _2d_vertex, _count);
-        if (_clipped == IrisFrustrum::inside)
-            context.DrawPrimitive(_2d_vertex, _index, _count);
-        else
-            context.DrawPrimitiveIntersect(_trans_vertex, _2d_vertex, _index, _count);
     }
     else
     {
         context.GetGeometryPipeline().LoadTrasformationMatrix();
         _matrix.Apply();
         context.ProcessPrimitive(_vertex_buffer, _2d_vertex, _count, _color);
-        if (_clipped == IrisFrustrum::inside)
-            context.DrawPrimitive(_2d_vertex, _index, _count);
-        else
-            context.DrawPrimitiveIntersect(_vertex_buffer, _2d_vertex, _index, _count);
     }
+	if (_clipped == IrisFrustrum::inside)
+		context.DrawPrimitive(_2d_vertex, _index, _count);
+	else
+		context.DrawPrimitiveIntersect(_trans_vertex, _2d_vertex, _index, _count);
 
 }
 
 
-void	IrisManualObject::TransformAndLightAndDrawNoClip()
-{
-    IrisContext		&context = IrisContext::Get();
-    // normal tranfo
-    // 3d convertion
-    context.SetMaterial(_material);
-    if (_lighted)
-    {
-        _matrix.Load();
-        context.ProcessPrimitive(_vertex_buffer, _trans_vertex, _count);
-        float* trans = _matrix.SaveTranslation();
-        _matrix.Load();
-        _matrix.RestoreTranslation(trans);
-        context.ProcessNormal(_normal, _trans_normal, _count);
-        context.GetLightingPipeline().Compute(_trans_vertex, _2d_vertex , _trans_normal, _count, _color);
-        context.GetGeometryPipeline().LoadTrasformationMatrix();
-        context.ProcessPrimitive(_trans_vertex, _2d_vertex, _count);
-        if (_clipped == IrisFrustrum::inside)
-            context.DrawPrimitive(_2d_vertex, _index, _count);
-        else
-            context.DrawPrimitiveIntersect(_trans_vertex, _2d_vertex, _index, _count);
-    }
-    else
-    {
-        context.GetGeometryPipeline().LoadTrasformationMatrix();
-        _matrix.Apply();
-        context.ProcessPrimitive(_vertex_buffer, _2d_vertex, _count,  _color);
-        if (_clipped == IrisFrustrum::inside)
-            context.DrawPrimitive(_2d_vertex, _index, _count);
-        else
-            context.DrawPrimitiveIntersect(_vertex_buffer, _2d_vertex, _index, _count);
-    }
-}
 
 
 void	IrisManualObject::ClippedAndLighted()
 {
-    IrisContext		&context = IrisContext::Get();
-    IrisFrustrum& f = context.GetGeometryPipeline().GetFrustrum();
-
-    _matrix.Load();
-    vect3d	center = _center;
-    mat_trans_single_iris(center._x, center._y, center._z);
-    _clipped = f.TestSphere(center, _radius);
-    if (_clipped != IrisFrustrum::outside)
-        _lighted = context.GetLightingPipeline().IsInLight(center, _radius);
+	static IrisContext		&context = IrisContext::Get();
+	_matrix.Load();
+	vect3d	center = _center;
+	mat_trans_single_iris(center._x, center._y, center._z);
+    if (!context._soft_clip)
+	{
+		IrisFrustrum& f = context.GetGeometryPipeline().GetFrustrum();
+		_clipped = f.TestSphere(center, _radius);
+	}
+	if (context._lighting && _clipped != IrisFrustrum::outside)
+		_lighted = context.GetLightingPipeline().IsInLight(center, _radius);
 }
 
 void	IrisManualObject::Transform()
 {
+	static IrisContext		&context = IrisContext::Get();
     if (_clipped != IrisFrustrum::outside)
     {
-        IrisContext::Get().GetGeometryPipeline().LoadTrasformationMatrix();
-        IrisContext::Get().ProcessPrimitive(_vertex_buffer, _trans_vertex, _count);
+        context.GetGeometryPipeline().LoadTrasformationMatrix();
+        context.ProcessPrimitive(_vertex_buffer, _trans_vertex, _count);
     }
 }
 
@@ -178,7 +163,7 @@ void	IrisManualObject::Draw()
 {
     if (_clipped != IrisFrustrum::outside)
     {
-        IrisContext		&context = IrisContext::Get();
+        static IrisContext		&context = IrisContext::Get();
         context.SetMaterial(_material);
         context.DrawPrimitive(_2d_vertex, _index, _count);
     }

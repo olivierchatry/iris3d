@@ -1,0 +1,83 @@
+<!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>main.cpp</title>
+<meta name="GENERATOR" content="SciTE - www.Scintilla.org" />
+<style type="text/css">
+.S0 {
+	color: #808080;
+}
+.S2 {
+	font-style: italic;
+	font-family: monospace;
+	color: #007F00;
+	font-size: 9pt;
+}
+.S3 {
+	font-style: italic;
+	font-family: monospace;
+	color: #3F703F;
+	font-size: 9pt;
+}
+.S4 {
+	color: #007F7F;
+}
+.S5 {
+	font-weight: bold;
+	color: #00007F;
+}
+.S6 {
+	font-family: monospace;
+	color: #7F007F;
+	font-size: 11pt;
+}
+.S9 {
+	color: #7F7F00;
+}
+.S10 {
+	font-weight: bold;
+	color: #000000;
+}
+span {
+	font-family: monospace;
+	font-size: 10pt;
+}
+</style>
+</head>
+<body>
+<span><span class="S3">/*********************************************************<br /></span>
+<span class="S3">** File name : main.cpp<br /></span>
+<span class="S3">** Iris Engine V0.9 "alllaiii" [init]<br /></span>
+<span class="S3">** Date of creation: 30/06/2002<br /></span>
+<span class="S3">** Author : Olivier Chatry - Epitech Console Laboratory<br /></span>
+<span class="S3">**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(http://www.epitech.net/labconsole/)<br /></span>
+<span class="S3">*********************************************************/</span><span class="S0"><br /></span>
+<span class="S0"><br /></span>
+<span class="S9">#include "Iris.hpp"<br /></span>
+<span class="S0"><br /></span>
+<span class="S5">int</span><span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">main</span><span class="S10">(</span><span class="S5">int</span><span class="S0"> </span><span class="S11">ac</span><span class="S10">,</span><span class="S0"> </span><span class="S5">char</span><span class="S0"> </span><span class="S10">**</span><span class="S11">av</span><span class="S10">)</span><span class="S0"><br /></span>
+<span class="S10">{</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// get the context<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">IrisContext</span><span class="S0"> </span><span class="S10">&amp;</span><span class="S11">c</span><span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S11">IrisContext</span><span class="S10">::</span><span class="S11">Get</span><span class="S10">();</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">c</span><span class="S10">.</span><span class="S11">InitContext</span><span class="S10">(</span><span class="S4">1024</span><span class="S0"> </span><span class="S10">*</span><span class="S0"> </span><span class="S4">1024</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// load Iris Object (must be done after Init)<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// look for paddle<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S5">if</span><span class="S0"> </span><span class="S10">(</span><span class="S11">c</span><span class="S10">.</span><span class="S11">GetInputManager</span><span class="S10">().</span><span class="S11">ControllerCount</span><span class="S10">()</span><span class="S0"> </span><span class="S10">==</span><span class="S0"> </span><span class="S4">0</span><span class="S10">)</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S10">{</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">printf</span><span class="S10">(</span><span class="S6">"[ERROR] No controller found\n"</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S5">return</span><span class="S0"> </span><span class="S10">(-</span><span class="S4">1</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S10">}</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// get the first paddle in mapple bus<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">IrisController</span><span class="S0"> </span><span class="S10">&amp;</span><span class="S11">p</span><span class="S0"> </span><span class="S10">=</span><span class="S0"> </span><span class="S11">c</span><span class="S10">.</span><span class="S11">GetInputManager</span><span class="S10">().</span><span class="S11">GetController</span><span class="S10">(</span><span class="S4">0</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S5">while</span><span class="S0"> </span><span class="S10">(!</span><span class="S11">p</span><span class="S10">.</span><span class="S11">Start</span><span class="S10">())</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S10">{</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// request for update input, normally this automaticaly done in<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S2">// Contex::BeginScene();<br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">c</span><span class="S10">.</span><span class="S11">GetInputManager</span><span class="S10">().</span><span class="S11">Update</span><span class="S10">();</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S11">printf</span><span class="S10">(</span><span class="S6">"Hello world\n"</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S10">}</span><span class="S0"><br /></span>
+<span class="S0">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S5">return</span><span class="S0"> </span><span class="S10">(</span><span class="S4">0</span><span class="S10">);</span><span class="S0"><br /></span>
+<span class="S10">}</span><span class="S0"><br /></span>
+<span class="S0"></span></span>
+</body>
+</html>

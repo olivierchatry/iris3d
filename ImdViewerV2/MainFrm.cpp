@@ -214,7 +214,7 @@ void CMainFrame::OnTimer(UINT nIDEvent)
 
 void CMainFrame::SetAnimation(int begin, int end)
 {
-	m_wndAnimToolBar.m_slider.SetRange(begin, end);
+	m_wndAnimToolBar.m_slider.SetRange	(begin, end);
 	OnTimer(_timer_id);
 }
 

@@ -1,0 +1,169 @@
+<html>
+<head>
+	<title>Iris3D Engine for Dreamcast tutorial 04 - 2d Drawing</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link rel="stylesheet" href="css/iris.css">
+</head>
+
+<table width="640" align=center>
+<tr>
+    <th colspan=2>Iris3D Tutorial03 - 2d Drawing</th>
+</tr>
+<tr>
+    <td class="menu"><a href="#introduction">Introduction</a></td>
+    <td class="menu">What we will see in this tutorial</td>
+</tr>
+<tr>
+    <td class="menu"><a href="#init">Using 2d</a></td>
+    <td class="menu">How to draw 2d objects.</td>
+</tr>
+</table>
+<br><br>
+<a name="introduction"/>
+<table width="640" align=center>
+<tr>
+    <th>Introduction</th>
+</tr>
+<tr>
+    <td>
+        In this tutorial, we will learn how to draw 2d objects using the
+	IrisManualObject type.
+    </td>
+</tr>
+</table>
+<br><br>
+<a name="init"/>
+<table width="640" align=center>
+<tr>
+    <th>How to draw 2d objects</th>
+</tr>
+<tr>
+    <td>
+    This tutorial starts with a classical Iris Initialisation (see tutorial 1).
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+	IrisContext &c = IrisContext::Get();<br>
+	c.InitContext(1024 * 1024);<br>
+	c.GetGeometryPipeline().SetProjection(90.0f, 0.00001f, 5000.0f);<br>
+	c.GetGeometryPipeline().SetViewport(0.0f, 0.0f, 640.0f, 480.0f);<br>
+	c.GetGeometryPipeline().SetView(vect3d(0.0f, 150.0f, 0.0f),<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vect3d(0.0f, 0.0f, 0.0f),<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vect3d(0.0f, 0.0f, 1.0f));<br>
+	c.GetGeometryPipeline().Update();<br>
+	c.GetLightingPipeline().SetAmbientColor(IrisColor(0.0f, 0.0f, 0.0f, 0.0f));<br>
+	c.GetLightingPipeline().Update();<br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+    <td>
+    After testing if at least one controller is plugged in, we declare an
+    IrisObject and load a mesh. Then, we declare an IrisManualObject. The
+    first step is to allocate memory for the 4 vertices (the 4 points that
+    define a square). We assign coordinates to each of these
+    vertices, then we assign a color to the manual object.<br>
+    !! Notice that the manual object must be stripped manually.
+        <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+	IrisManualObject	image;<br>
+	image.Allocate(4);<br>
+	image.GetVertex(0) = vect3d(25.0f, 385.0f, 1.0f);<br>
+	image.GetVertex(1) = vect3d(75.0f, 385.0f, 1.0f);<br>
+	image.GetVertex(2) = vect3d(25.0f, 435.0f, 1.0f);<br>
+	image.GetVertex(3) = vect3d(75.0f, 435.0f, 1.0f);<br>
+	image.SetColor(IrisColor(1.0f, 1.0f, 1.0f, 1.0f));<br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+	<td>
+	We load a texture to apply to our manual object. We declare a variable
+	of type IrisMaterial*. The texture is loaded by the LoadMaterial
+	function, found in our MaterialManager. This function takes only one
+	parameter: a char * containing the path and the filename of the texture.
+	The texture is then applied to our manual object using the SetMaterial
+	function (method of the IrisManualObject class).
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+	IrisMaterial *material;<br>
+	material = c.GetMaterialManager().LoadMaterial("/rd/gruiiik.png");<br>
+	image.SetMaterial(material);<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	We have to set the UV coordinates to tell how the texture will be
+	applied to our manual object. 
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+	image.SetUV(0, 0.0f, 0.0f);<br>
+	image.SetUV(1, 1.0f, 0.0f);<br>
+	image.SetUV(2, 0.0f, 1.0f);<br>
+	image.SetUV(3, 1.0f, 1.0f);<br>
+        <br>
+			</td>
+		</tr>
+	</table>
+        You must call 'Precalculate2D' after initialising the manual object to convert directly
+        3D coordinate to 2d. 
+	<table class="code" align=center>
+        <tr>
+            <td>
+            image.Precalculate2D();
+            </td>
+        </tr>
+        </table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	Our manual object is ready. There is nothing really important in our
+	main loop, it just gives motion to the whole thing. You can notice the
+	SetDepthWrite command that allows us to draw the 2d object not writting
+	in the Z-Buffer in order to be sure that our sprite will always be in the
+	background (usefull to render a skybox for example). Notice that we call
+        'Render2D()' rather than 'Render()'.
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+		context.BeginScene();<br>
+		mesh.Render();<br>
+		context.SetDepthWrite(false);<br>
+		image.Render2D();<br>
+		context.SetDepthWrite(true);<br>
+		context.EndScene();<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<br>
+</table>
+
+</html>

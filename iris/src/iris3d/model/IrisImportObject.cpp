@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisImportObject.cpp
-**  Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -17,6 +17,7 @@ IrisImportTag::IrisImportTag() : _user_data(0), _pos(0)
 
 IrisImportTag::~IrisImportTag()
 {
+	printf("[INFO] Deleting tag '%s'", _name);
 	if (_pos)
 		delete [] _pos;
 	if (_user_data)
@@ -35,6 +36,7 @@ vect3d &IrisImportTag::GetPos(int current_anim)
 
 void IrisImportTag::Destroy()
 {
+	printf("[INFO] Deleting tag '%s'", _name);
 	if (_user_data)
 		delete [] _user_data;
 	if (_pos)
@@ -64,7 +66,8 @@ void IrisImportTag::SetNumAnim(int num_anim)
 
 IrisImportMesh::IrisImportMesh()
 {
-    _vertex = NULL;
+    _user_data = NULL;
+	_vertex = NULL;
     _section = NULL;
     _2d_vertex = NULL;
     _trans_normal = NULL;
@@ -73,6 +76,14 @@ IrisImportMesh::IrisImportMesh()
     _color	= NULL;
     _num_vertex = 0;
     _num_section = 0;
+    _matrix = 0;
+    _skinned_vertex = NULL;
+    _skinned_normal = NULL;
+	_skin_index = NULL;
+	_skin_weight = NULL;
+	_skin_indices = NULL;
+	_num_skinned = 0;
+	_lighted = false;
 }
 
 IrisImportMesh::~IrisImportMesh()
@@ -80,22 +91,47 @@ IrisImportMesh::~IrisImportMesh()
     Destroy();
 }
 
-void IrisImportMesh::Allocate(int num_vertex, int num_anim)
+void IrisImportMesh::Allocate(int num_vertex, int num_anim, bool matrix_sampling, bool have_skin)
 {
 	int	count = num_vertex * num_anim;
 	_num_vertex = num_vertex;
+	if (matrix_sampling)
+	{
+		count = num_vertex;
+		_matrix = new matrix[count];
+	}
+	else
+		_matrix = NULL;
 	_vertex			= new vect3d[count];
 	_normal			= new vect3d[count];
 	_trans_normal	= new vect3d[_num_vertex];
 	_trans_vertex	= new vect3d[_num_vertex];
 	_2d_vertex		= new vertex2dtl[_num_vertex];
 	_color			= new uint32 [_num_vertex];	
+	if (have_skin)
+	{
+		_skinned_vertex =new vect3d[num_vertex];
+		_skinned_normal = new vect3d[num_vertex];
+	}
 }
 
 void	IrisImportMesh::Destroy(void)
 {
-    if (_vertex != NULL)
+	printf("[INFO] Deleting mesh '%s'\n", _name);
+	if (_vertex != NULL)
         delete [] _vertex;
+	if (_skin_index != NULL)
+		delete [] _skin_index;	
+	if (_skin_indices != NULL)
+		delete [] _skin_indices;
+	if (_skin_weight != NULL)
+		delete [] _skin_weight;
+	if (_skinned_normal != NULL)
+		delete [] _skinned_normal;
+	if (_skinned_vertex != NULL)
+		delete [] _skinned_vertex;
+	if (_matrix != NULL)
+		delete [] _matrix;
     if (_trans_vertex != NULL)
         delete [] _trans_vertex;
     if (_normal != NULL)
@@ -111,7 +147,16 @@ void	IrisImportMesh::Destroy(void)
     }
     if (_color != NULL)
         delete [] _color;
-    _color = NULL;
+	if (_user_data != NULL)
+		delete [] _user_data;
+
+	_matrix = NULL;
+	_skin_index = NULL;
+	_skin_indices = NULL;
+	_skin_weight = NULL;
+	_skinned_vertex = NULL;
+	_skinned_normal = NULL;
+	_color = NULL;
     _vertex = NULL;
     _section = NULL;
     _2d_vertex = NULL;
@@ -120,8 +165,16 @@ void	IrisImportMesh::Destroy(void)
     _trans_vertex = NULL;
     _num_vertex = 0;
     _num_section = 0;
+	_num_skinned = 0;
+	_material = 0;
 }
 
+void	IrisImportMesh::SetUserDataSize(int size)
+{
+	if (_user_data)
+		delete [] _user_data;
+	_user_data = new char [size];
+}
 
 void	IrisImportMesh::ComputeCenter()
 {
@@ -187,14 +240,19 @@ IrisImportObject::~IrisImportObject()
 
 void	IrisImportObject::Destroy()
 {
-    if (_tag != NULL)
+    printf("[INFO] Deleting object %s\n", _name);
+	if (_tag != NULL)
         delete [] _tag;
     if (_mesh != NULL)
         delete [] _mesh;
     if (_num_material)
     {
-        for (int i = 0; i < _num_material; ++i)
-            IrisContext::Get().GetMaterialManager().UnloadMaterial(_material[i]);
+        
+		for (int i = 0; i < _num_material; ++i)
+		{
+			printf("[INFO] Deleting material '%s'\n", _material[i]->GetTexture(0)->GetFileName());
+			IrisContext::Get().GetMaterialManager().Unload(_material[i]);
+		}
         delete [] _material;
     }
     if (_file_name)
@@ -340,6 +398,14 @@ bool IrisImportObject::LoadFromImdFile(char *file_path, char *file_name,float sc
 //////////////////////////////////////////////////////////////////////////
 // imd v2.0 loading.
 //////////////////////////////////////////////////////////////////////////
+int	GetSkinOffset(int bone_index, int *skin_index)
+{
+	int	offset = 0;
+	while (bone_index --)
+		offset += skin_index[bone_index];
+	return offset;	
+}
+
 void IrisImportObject::LoadImd2Mesh(imd2_object_t *imd_object, float scale)
 {
 	SetNumMesh(imd_object->imd2_object_header.num_mesh);
@@ -349,12 +415,21 @@ void IrisImportObject::LoadImd2Mesh(imd2_object_t *imd_object, float scale)
 		IrisImportMesh	&imesh = GetMesh(mesh_index);
 		int				count = mesh->imd2_mesh_header.num_vertex * imd_object->imd2_object_header.num_anim;
 		strcpy(imesh.GetName(), mesh->imd2_mesh_header.name);
-		imesh.Allocate(mesh->imd2_mesh_header.num_vertex, imd_object->imd2_object_header.num_anim);
+		imesh.Allocate(mesh->imd2_mesh_header.num_vertex, imd_object->imd2_object_header.num_anim, 
+						imd_object->imd2_object_header.matrix_sampling, 
+						mesh->imd2_mesh_header.have_skin && mesh->imd2_skin);
+		if (strlen(mesh->user_data) > 0)
+		{
+			imesh.SetUserDataSize(strlen(mesh->user_data) + 1);
+			strcpy(imesh.GetUserData(), mesh->user_data);
+			printf("[INFO] User data for mesh '%s' = '%s'\n", mesh->imd2_mesh_header.name, imesh.GetUserData());
+		}
 		_total_num_vertex += imesh.GetNumVertex();
 		vect3d	*vertex = imesh.GetVertex();
 		vect3d	*normal = imesh.GetNormal();
+		vect3d	*skinned_vertex = imesh.GetSkinnedVertex();
+		vect3d	*skinned_normal = imesh.GetSkinnedNormal();
 		//////////////////////////////////////////////////////////////////////////
-		printf("Number of vertex = %d\n", count);
 		for (int i = 0; i < count; ++i)
 		{
 			vertex[i]._pos[0] = scale * mesh->imd2_vertex[i].pos[0];
@@ -366,6 +441,12 @@ void IrisImportObject::LoadImd2Mesh(imd2_object_t *imd_object, float scale)
 			normal[i]._pos[2] = mesh->imd2_vertex[i].normal[2];
 			normal[i]._pos[3] = 1.0f;
 			normal[i].Normalize();
+			if (mesh->imd2_mesh_header.have_skin && mesh->imd2_skin)
+			{
+				skinned_vertex[i] = vertex[i];
+				skinned_normal[i] = normal[i];
+
+			}
 		}
 		vertex2dtl	*vertex_2d = imesh.Get2DVertex();
 		uint32		*color	= imesh.GetColor();
@@ -401,9 +482,6 @@ void IrisImportObject::LoadImd2Mesh(imd2_object_t *imd_object, float scale)
 			_total_num_indice += num_indice;
 			indices = new unsigned short[num_indice];
 			src_section = &(mesh->imd2_face.imd2_section[0]);
-			// !! WARNING TO BE TESTES i don't remenber if 
-			// address of a referenece is the real
-			// address :(.
 			dst_section = &(imesh.GetSection(0));
 			num_indice = 0;
 			for (int i = 0; i < imesh.GetNumSection(); ++i)
@@ -416,6 +494,47 @@ void IrisImportObject::LoadImd2Mesh(imd2_object_t *imd_object, float scale)
 				src_section++;
 				dst_section++;
 			}
+		}
+		if(mesh->imd2_mesh_header.have_skin && mesh->imd2_skin)
+		{
+			int	skinned_count = mesh->imd2_mesh_header.num_skinned;
+			int	bone_count = imd_object->imd2_object_header.num_bones;
+			imesh.AllocateSkin(skinned_count, bone_count);
+			int		*skin_index		= imesh.GetSkinIndex();
+			float	*skin_weight	= imesh.GetSkinWeight();
+			int		*skin_indices	= imesh.GetSkinIndices();
+
+			memset(skin_index, 0, sizeof(*skin_index) * skinned_count);
+			memset(skin_weight, 0, sizeof(*skin_weight) * skinned_count);
+			memset(skin_indices, 0, sizeof(*skin_indices) * bone_count);
+
+
+			// for each bones ... count max index for each bones.
+			int		*tmp = new int [bone_count];
+			memset(tmp, 0, sizeof(*tmp) * bone_count);
+			for (int i = 0; i < mesh->imd2_mesh_header.num_vertex; ++i)
+			{
+				imd2_skin_t	*skin = mesh->imd2_skin + i;
+				for (int b = 0; b < skin->num_bones_assigned; ++b)
+				{
+					imd2_weight_t	*weight = skin->weight + b;
+					skin_indices[weight->bone_index]++;
+				}
+			}
+			for (int i = 0; i < mesh->imd2_mesh_header.num_vertex; ++i)
+			{
+				imd2_skin_t	*skin = mesh->imd2_skin + i;
+				for (int b = 0; b < skin->num_bones_assigned; ++b)
+				{
+					imd2_weight_t	*weight = skin->weight + b;
+					int				bone_index = weight->bone_index;
+					int				offset = GetSkinOffset(bone_index, skin_indices) + tmp[bone_index];
+					skin_weight[offset] = weight->weight;
+					skin_index[offset] = i;
+					tmp[bone_index] ++;
+				}
+			}
+			delete tmp;
 		}
 	}
 }
@@ -441,11 +560,11 @@ bool IrisImportObject::LoadFromImd2File(char *file_path, char *file_name,float s
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// Mesh converting.
-	printf("Loading mesh ...\n");
+	printf("[INFO] Loading mesh ...\n");
 	LoadImd2Mesh(imd_object, scale);
 	//////////////////////////////////////////////////////////////////////////
 	// Tag converting.
-	printf("Loading tag ...\n");
+	printf("[INFO] Loading tag ...\n");
 	SetNumTag(	imd_object->imd2_object_header.num_tag, 
 				imd_object->imd2_object_header.num_anim);
 	int	offset = 0;
@@ -477,4 +596,3 @@ bool IrisImportObject::LoadFromFile(char *file_path, char *file_name,float scale
 		return LoadFromImd2File(file_path, file_name, scale);	// try to load an imd v2 file.
 	return true;	
 }
-

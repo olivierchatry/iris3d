@@ -1,0 +1,151 @@
+<html>
+<head>
+	<title>Iris3D Engine for Dreamcast tutorial 01 - Init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link rel="stylesheet" href="css/iris.css">
+</head>
+
+<table width="640" align=center>
+<tr>
+    <th colspan=2>Iris3D Tutorial01 - Init</th>
+</tr>
+<tr>
+    <td class="menu"><a href="#introduction">Introduction</a></td>
+    <td class="menu">What we will see in this tutorial</td>
+</tr>
+<tr>
+    <td class="menu"><a href="#init">Initialising Iris3D</a></td>
+    <td class="menu">First step in making a game : the initialisation.</td>
+</tr>
+<tr>
+    <td class="menu"><a href="html/code.html" target="_source_code">Source code</a></td>
+    <td class="menu">Source code of the sample.</td>
+</tr>
+</table>
+<br><br>
+<a name="introduction"/>
+<table width="640" align=center>
+<tr>
+    <th>Introduction</th>
+</tr>
+<tr>
+    <td>
+        In this tutorial, we will learn how to set up the environment and start
+        working under Iris.
+    </td>
+</tr>
+</table>
+<br><br>
+<a name="init"/>
+<table width="640" align=center>
+<tr>
+    <th>Initialising Iris3D</th>
+</tr>
+<tr>
+    <td>
+    The first step in the initialisation process is to get what we call the 
+    <font name=code>Context</font>. The <font name=code>context</font> is in 
+    fact the heart of Iris. It represents the dreamcast and contains the
+    pipelines (example: Geometry) and managers (example: Input Manager).
+    <br><br>
+    </td>
+</tr>
+<tr>
+    <td>
+    The second step is to Init the context using the InitContext function. This
+    function will initialise KOS and other things like input. You just have
+    to call it once. This function takes only one parameter that defines the
+    size of the vertex buffer you will use. It represents the maximum size in 
+    bytes of the vertex buffer available for each frame (example: 1024 * 1024).
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+				IrisContext &c = IrisContext::Get();<br>
+                                c.InitContext(1024 * 1024);
+				<br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+    <td>
+    The next step consists of using the InputManager to get the number of
+    controllers. In this tutorial, you can notice a simple test to check how
+    many controllers are plugged in (using the ControllerCount function) and
+    exit the game if none are found. 
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+			    if (c.GetInputManager().ControllerCount() == 0)
+                                <br>
+                                {
+                                <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;printf("[ERROR] No controller found\n");
+                                <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;return (-1);
+                                <br>
+                                }
+				<br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+    <td>
+    We can access a controller using the
+    GetController function. This function takes only one parameter: an int
+    which specifies the number of the controller you want to use (notice that
+    the first controller is the number 0).
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+                            IrisController &p = c.GetInputManager().GetController(0);
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+    <td>
+    We will exit our game loop if start button is pressed on the first
+    controller. Most of the controller's buttons return a boolean telling
+    wether it's pressed or not. We'll see later how the analog stick and trigger
+    work.
+    Notice the GetInputManager().Update() function which is required to update
+    the input. This operation is usually done in the BeginScene function which
+    isn't used in this example.
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+                            while (!p.Start())
+                            <br>
+                            {
+                            <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;c.GetInputManager().Update();
+                            <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;printf("Hello world\n");
+                            <br>
+                            }
+                            <br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+</table>
+
+</html>

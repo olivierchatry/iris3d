@@ -1,0 +1,56 @@
+===================================================
+ImdExporter Documentation.
+2003-07-18 Chatry Olivier, Porterie Arnaud
+===================================================
+
+I - Introduction.
+
+	ImdExporter is a 3dsmax plugin that allows you to
+export 3d data and textures. It handle texture resizing to
+the nearest sqUare value. It uses the devil library for the
+texture conversion. It can export:
+- bones and skinning
+- sampled animation
+- matrix animation
+- static object
+- mesh stripping at export
+
+II - Installation.
+
+	Copy:
+- ImdExp.dle in the 3dsmax/plugins/ directory
+- devil.dll, ilu.dll, ilut.dll in the WINNT/System32/ directory
+- msvcp71.dll, MFC71.dll, msvcr71.dll (Visual 7.1 runtimes) in WINNT/System32/ directory
+	
+
+III - How to use.
+
+	After modeling you object under 3dsmax, go to file - export menu. A dialog
+box will open. Choose the directory and type in the filename with the extension .IMD,
+press OK. A new dialog box appears which contains the export options of the IMD.
+
+	The options:
+- OBJECT:
+	- Export object data: allows the export of the 3d data
+	- Only selected object: not supported =|
+	- Sample animations: tells the plugin that you're going to save animation
+	  in the IMD.
+	- Static frame: exports a single frame from an animation (NOT the full animation)
+	- Sample Matrix: tells the plugin to sample the matrix instead of the vertex (not supported by iris)
+	- sample Vertex: tells the plugin to apply the matrix modifiers before exporting the mesh
+	- export skin data: exports skinning data
+- BONES:
+	- export bones data: exports bones data
+	- sample matrix animation: you need to give the path of the animation (.imdbone)
+- DEBUG:
+	- open 3d viewer when finished export: not working
+	- open log window: displays the log
+	- open DOS log window: do not use that
+
+IV - Notes.
+
+	Things to do in 3dsmax in order to be able to use the exporter:
+- use textures as diffuse maps
+- doesn't support objects of a single triangle
+- doesn't support sub materials
+- report any other bugs, or request features

@@ -18,6 +18,7 @@ class ColModelModel;
 class ColSphereModel;
 class ColRayModel;
 
+//! Model collider.
 class ColModel
 {
 friend class ColModelModel;
@@ -31,10 +32,12 @@ public:
 	~ColModel();
 
 
-	/*
-	** from/to mesh
+	//! Build collide model for an IrisImportMesh
+	/*!
+	\param mesh The mesh form wich the collide model will be build.
 	*/
 	void					Build(IrisImportMesh& mesh);
+	//! Return mesh from wich the collide model was build.
 	IrisImportMesh&			GetMesh() {return *_mesh;}
 	udword					SectionFaces(int i){return _section_faces[i];}
 	bool					GetFace(unsigned long l, vect3d& a, vect3d& b, vect3d& c);

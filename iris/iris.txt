@@ -20,9 +20,61 @@ Notes:
 	 = code sample
 
 ---------------------------------------------------------------------
+2003.07.01 - olivier
+---------------------------------------------------------------------
+* Added 'SetSoftClip' and 'SetLighting' to renderstate in IrisContext.
+	SetSoftClip allow iris to clip.
+	SetLighitng allow iris to compute dynamic lighting.
+* Removed RenderNoClip and assossiate function from IrisManualObject
+and IrisObject.
+* Cleaned IrisFaceCLipper.
+---------------------------------------------------------------------
+2003.06.30 - olivier
+---------------------------------------------------------------------
+* Modified .imdbones format to take less space. 
+	(removed pivot member)
+* Removed 'KOS_INIT_FLAGS()' from IrisContext.cpp. You
+have to define it in your app.
+---------------------------------------------------------------------
+2003.06.25 - olivier
+---------------------------------------------------------------------
+* Corrected stupid bug in IrisSkeletal Update.
+	From now, bones are working corectly.
+---------------------------------------------------------------------
+2003.06.10 - olivier
+---------------------------------------------------------------------
+* Removed prefetch optimization, doesn't seems
+to optimize :). I might messed up something.
+---------------------------------------------------------------------
+2003.06.02 - olivier
+---------------------------------------------------------------------
+* Trying to optimize iris using prefetch instruction.
+---------------------------------------------------------------------
+2003.05.27 - olivier
+---------------------------------------------------------------------
+* Added a skeletal class for hierarchical animation.
+* Added a skeletal manager (IrisSkeletalManager) for imd2bone loading.
+* Added a template for reference counting (IrisManager). 
+IrisObjectManager and IrisMaterialManager herit from this
+template. Function name have changed for unload data. 
+IrisImportObject::UnloadObject --> IrisImportObject::Unload
+IrisImportMaterial::UnloadMaterial --> IrisImportMaterial::Unload
+---------------------------------------------------------------------
+2003.05.26 - olivier
+---------------------------------------------------------------------
+* Color mixing beetwen static lighting, dynamic lighting and 
+ambient color  work correctly.
+* TODO : Modify ambient color handling.
+* Corrected the color mixing bug in the clipper.
+---------------------------------------------------------------------
 2003.05.02 - olivier
 ---------------------------------------------------------------------
-* modifier the way iris handle renderstate.
+* Modified the way iris handle renderstate.
+---------------------------------------------------------------------
+2003.04.28 - olivier
+---------------------------------------------------------------------
+* imd2 loading done. Some feature of imd2 missing 
+(skeletal animation, matrix animation).
 ---------------------------------------------------------------------
 2003.04.23 - olivier
 ---------------------------------------------------------------------
@@ -82,6 +134,7 @@ user to change variable using network and a mfc interface.
 	sorry for the inconvenience
 ---------------------------------------------------------------------
 2002.11.10 - oliver
+---------------------------------------------------------------------
 * added wrapper for opcode 
 	* ray collider
 	* aabb collider (axis aligned bounding box)
@@ -89,63 +142,56 @@ user to change variable using network and a mfc interface.
 	* IrisPlane collider
 ---------------------------------------------------------------------
 2002.11.10 - oliver
+---------------------------------------------------------------------
 * iris now using opcode 1.2
 * added modification by Einrich Tillack <http://a128.x15.org>
 	* vertex interpollation 
 * working on explorter, cleaning code, adding plugin system
 ---------------------------------------------------------------------
 2002.10.03 - oliver
+---------------------------------------------------------------------
 * changed matrix function for automatic alignement.
 * changed DrawPrimitive - optimized 
----------------------------------------------------------------------
 
+---------------------------------------------------------------------
 2002.09.07 - olivier
+---------------------------------------------------------------------
 * added spline support for camera. Using the smousse plugin 
 coded by francis, you can export spline and use it with
 camera to create a fly by.
 * added a sample "spline" 
-
 ---------------------------------------------------------------------
-
 2002.08.11 - olivier :
+---------------------------------------------------------------------
 * fixed color mixing when using lighting with ambient color.
 * added a new sample, a very basic game.
-
 ---------------------------------------------------------------------
-
 2002.07.30 - olivier :
-* changed the way iris handle color mixing, seems to be very buggy
-
 ---------------------------------------------------------------------
-
+* changed the way iris handle color mixing, seems to be very buggy
+---------------------------------------------------------------------
 2002.07.20 - olivier :
+---------------------------------------------------------------------
 * optimisation !!!!!
 * changed the way iris handle lighting
-
 ---------------------------------------------------------------------
-
 2002.07.17 - OMAR
-
+---------------------------------------------------------------------
 - Definitively removed the 'vertex3d' class (redundant with 'vect3d')
   and changed corresponding code. Improved the 'vect3d' with some 
   missing operators and functionnalities.
   Please update your code if you used 'vertex3d' in the past.
 - Removed the need for a bunch of -I directives in CFLAGS, sub-directorys 
   are now specified when including in Iris.hpp.
-
 ---------------------------------------------------------------------
-
-
 15/07/2002:
-
+---------------------------------------------------------------------
 *modified :
 	IrisExporter:
 		Added Prelighting.
-
 ---------------------------------------------------------------------
-
 13/07/2002:
-
+---------------------------------------------------------------------
 * modified : 
 	IrisEngine[iris3d/|include,src|/model/IrisManualObject.|cpp.hpp|] 
 	Modified IrisManualObject, can be rendered in 2d by calling Render2D.
@@ -153,15 +199,15 @@ camera to create a fly by.
 	Clipping is working better.
 
 ---------------------------------------------------------------------
-
 12/07/2002:
-
+---------------------------------------------------------------------
 * bugfixed:
 	IrisExporter : a lot of bug fix. Exporter is still more stable than ever.
-
 ---------------------------------------------------------------------
 
+---------------------------------------------------------------------
 10/07/2002:
+---------------------------------------------------------------------
 
 * modified :
 	IrisEngine[iris3d/src/model/IrisImportObject.cpp] 
@@ -175,9 +221,9 @@ camera to create a fly by.
 	Added a function InitialInit called once on init.
 
 ---------------------------------------------------------------------
-
+---------------------------------------------------------------------
 02/07/2002 :
-
+---------------------------------------------------------------------
 * added:
 	IrisEngine[iris3d/|src,include|/collide/|ColModel,ColSphereModel,ColModelModel|.|hpp,cpp|]
 	opcode wrapping for iris, see sample "collide" (iris3d/sample).

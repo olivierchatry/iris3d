@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisGeometryPipeline.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -50,10 +50,10 @@ public:
 	//! SetProjection
 	/*!
 	Define the projection matrix.
-		\param Horizontal field of view. The field of view is basically the angle
+		\param fov Horizontal field of view. The field of view is basically the angle
 		beetwen frustrum pane.
-		\param The near plane clipping.
-		\param The far plane clipping.
+		\param znear The near plane clipping.
+		\param zfar The far plane clipping.
 		\return Nothing.
 	*/
 	void	SetProjection(float fov, float znear, float zfar)
@@ -66,7 +66,7 @@ public:
 	//! SetProjection
 	/*!
 	Define the projection matrix.
-	\param A matrix that directly represent the projection matrix.
+	\param projection A matrix that directly represent the projection matrix.
 	\return Nothing.
 	*/
 	void	SetProjection(const matrix &projection)
@@ -77,7 +77,7 @@ public:
 	//! SetViewport
 	/*!
 	Define the viewport matrix.
-	\param A matrix that directly represent the viewport matrix.
+	\param m A matrix that directly represent the viewport matrix.
 	\return Nothing.
 	*/
 	void	SetViewport(const matrix &m)
@@ -88,10 +88,10 @@ public:
 	//! SetViewport
 	/*!
 	Define the viewport matrix.
-	\param Top coordinate of rendering window.
-	\param Left coordinate of rendering window.
-	\param Width of the render window.
-	\param Height of the render window.
+	\param x Top coordinate of rendering window.
+	\param y Left coordinate of rendering window.
+	\param width Width of the render window.
+	\param height Height of the render window.
 	\return Nothing.
 	*/
 	void	SetViewport(float x, float y, float width, float height, float min_z = 0.0f, float max_z = 1.0f)
@@ -103,7 +103,7 @@ public:
 	//! SetView
 	/*!
 	Define the view (Camera) matrix.
-	\param A matrix that directly represent the view (Camera) matrix.
+	\param m A matrix that directly represent the view (Camera) matrix.
 	\return Nothing.
 	*/
 	void	SetView(const matrix &m)
@@ -114,7 +114,7 @@ public:
 	//! SetView
 	/*!
 	Define the view (Camera) matrix.
-	\param An IrisCamera.
+	\param camera An IrisCamera.
 	\return Nothing.
 	*/
 	void	SetView(IrisCamera &camera)
@@ -125,9 +125,9 @@ public:
 	//! SetView
 	/*!
 	Define the view (Camera) matrix.
-	\param Position of the camera.
-	\param Position of were the camera look.
-	\param Perpendicular vector of the camera. Generaly (0.0f,1.0f,0.0f)
+	\param eye Position of the camera.
+	\param at Position of were the camera look.
+	\param up Perpendicular vector of the camera. Generaly (0.0f,1.0f,0.0f)
 	\return Nothing.
 	*/
 	void	SetView(const vect3d &eye, const vect3d &at, const vect3d &up)
@@ -140,7 +140,7 @@ public:
 	//! GetProjectionMatrix
 	/*!
 		Get the projection matrix
-		\param The matrix that will receive the projection matrix.
+		\param projection The matrix that will receive the projection matrix.
 		\return Nothing.
 	*/
 	void	GetProjectionMatrix(matrix &projection)
@@ -151,7 +151,7 @@ public:
 	//! GetTransformationMatrix
 	/*!
 	Get the transformation matrix
-	\param The matrix that will receive the transformation matrix.
+	\param transformation The matrix that will receive the transformation matrix.
 	\return Nothing.
 	*/
 	void	GetTransformationMatrix(matrix	&transformation)
@@ -162,7 +162,7 @@ public:
 	//! GetViewportMatrix
 	/*!
 	Get the viewport matrix
-	\param The matrix that will receive the viewport matrix.
+	\param viewport The matrix that will receive the viewport matrix.
 	\return Nothing.
 	*/
 	void	GetViewportMatrix(matrix &viewport)
@@ -181,7 +181,7 @@ public:
 	//! GetViewMatrix
 	/*!
 	Get the view (Camera) matrix
-	\param The matrix that will receive the view matrix.
+	\param view The matrix that will receive the view matrix.
 	\return Nothing.
 	*/
 	void	GetViewMatrix(matrix &view)
@@ -213,7 +213,7 @@ public:
 	/*!
 	Multiply concatenation matrix with object matrix using sh4 instruction,
 	store it into transformation matrix.
-	\param The object transformation matrix.
+	\param object_matrix The object transformation matrix.
 	\return Nothing.
 	*/
 	void	ApplyObjectMatrix(matrix &object_matrix)
@@ -254,8 +254,8 @@ public:
 	//! Transform
 	/*!
 	Tranform a 3d vertex to a 2d, projected on screen vertex.
-	\param Source 3d vertex.
-	\param Target 2d vertex.
+	\param source Source 3d vertex.
+	\param target Target 2d vertex.
 	\return Nothing.
 	*/
 	void			Transform(const vect3d& source, vertex2dtl* target)
@@ -271,8 +271,9 @@ public:
 	Tranform a 3d vertex to a 2d, projected on screen vertex.
 	This function lerp (Linear interpolation) position beetwen two 
 	3D vertex. It's mainly used for animation interpolation.
-	\param Source 3d vertex.
-	\param Target 2d vertex.
+	\param source Source 3d vertex.
+	\param source2 Source 3d vertex.
+	\param target Target 2d vertex.
 	\return Nothing.
 	*/
     void			Transform(const vect3d& source,const vect3d& source2, vertex2dtl* target, int count, int framecount)
@@ -295,8 +296,9 @@ public:
 	matrix.
 	This function lerp (Linear interpolation) position beetwen two 
 	3D vertex. It's mainly used for animation interpolation.
-	\param Source 3d vertex.
-	\param Target 2d vertex.
+	\param source Source 3d vertex.
+	\param source2 Source 3d vertex.
+	\param target Target 2d vertex.
 	\return Nothing.
 	*/
     void			Transform(const vect3d& source,const vect3d& source2, vect3d* target, int count, int framecount)
@@ -323,8 +325,8 @@ public:
 	/*!
 	Tranform a 3d vertex to a 3d transformed vertex using transformation
 	matrix.
-	\param Source 3d vertex.
-	\param Target 3d vertex.
+	\param source 3d vertex.
+	\param target 3d vertex.
 	\return Nothing.
 	*/
 	void			Transform(const vect3d& source, vect3d* target)
@@ -332,6 +334,5 @@ public:
 		*target = source;
 		mat_trans_single_iris(target->_x, target->_y, target->_z);
 	}
-
 };
 #endif //__GEOMETRYPIPELINE_HPP__

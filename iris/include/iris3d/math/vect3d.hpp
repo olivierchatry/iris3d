@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : vert3d.hpp
-**  Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry / Omar Cornut - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -49,6 +49,7 @@ public:	// Constructors/Assignators *********************
 	{
 		_x = 0.0f; _y = 0.0f; _z = 0.0f; _w = 1.0f;
 	}
+
 	//! Constructor of the vect3d class.
 	/*!
 		Create a vect3d object.
@@ -60,6 +61,7 @@ public:	// Constructors/Assignators *********************
 	{
 		Set(x, y, z);
 	}
+
 	//! Constructor of the vect3d class.
 	/*!
 		Create a vect3d object.
@@ -72,16 +74,39 @@ public:	// Constructors/Assignators *********************
 	{
 		Set(x, y, z, w);
 	}
+
 	//! Constructor of the vect3d class.
 	/*!
-		Create a vect3d object.
-		\param value : a float, the x, y, z value of the vertex.
+	Create a vect3d object.
+	\param value : a float, the x, y, z value of the vertex.
 	*/
 	vect3d(const float value)
 	{
-	    _x = _y = _z = value;
-	    _w = value; // FIXME: Is that what we want ?
+		_x = _y = _z = value;
+		_w = value; // FIXME: Is that what we want ?
 	}
+		
+	//! Constructor of the vect3d class.
+	/*!
+	Create a vect3d object.
+	\param value : a pointer to a table of 3 float
+	*/
+	vect3d(const float *value)
+	{
+		_x = *value ++;
+		_y = *value ++;
+		_z = *value ++;
+		_w = 1.0f;
+	}
+
+	vect3d(const vect3d &v)
+	{
+		_x = v._x;
+		_y = v._y;
+		_z = v._z;
+		_w = v._w;
+	}
+
 	//! Set function.
 	/*!
 		Assign the x, y and z value to a vect3d object.
@@ -94,6 +119,7 @@ public:	// Constructors/Assignators *********************
 	{
 		_x = x; _y = y; _z = z; _w = 1.0f;
 	}
+
 	//! Set function.
 	/*!
 		Assign the x, y and z value to a vect3d object.
@@ -101,7 +127,7 @@ public:	// Constructors/Assignators *********************
 		\param y : a float, the y value of the vertex.
 		\param z : a float, the z value of the vertex.
 		\param w : a float, ,usaly set to 1.0f.
-		\retrun nothing.
+		\return nothing.
 	*/
 	void 	Set(const float x, const float y, const float z, const float w)
 	{

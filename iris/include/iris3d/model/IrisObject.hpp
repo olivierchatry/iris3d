@@ -1,20 +1,16 @@
-/*! \class IrisObject
- *  \brief Object user interface
- *  \author Chatry Olivier
- *  \version 0.8
- *  \date    2003-04-09
- */
+/*********************************************************
+**  File name : IrisObject.hpp
+**  Iris Engine V0.9 "alllaiii"
+**  Date Of Creation: 18/06/2002
+**  Author : Olivier Chatry - Epitech Console Laboratory
+**           (http://www.epitech.net/labconsole/)
+*********************************************************/
 #ifndef __IRIS_OBJECT_H__
 #define __IRIS_OBJECT_H__
 
 //!	IrisObject class.
 /*!
 	IrisObject represent object that you wan't to display. It loaded from IMD object.
-
-	Source code : Simple object loading (sample/display/).
-	Html source code : Simple object loading (sample/display/).
-	Source code : Simple object loading and transforming (sample/matrix/).
-	Html source code : Simple object loading and transforming (sample/matrix/).
 */
 class	IrisObject
 {
@@ -29,8 +25,7 @@ protected:
     int								_current_animation_next;
     int								_fps;
     int								_framecount;
-
-    IrisImportObject	*_object;
+    IrisImportObject				*_object;
 public:
 	//!	Constructor of the IrisObject class.
 	/*!
@@ -45,6 +40,14 @@ public:
         _fps = 1;
         _animation = false;
     }
+
+	//! Destructor.
+	void	Destroy();
+
+	~IrisObject()
+	{
+		Destroy();
+	}
 
 	//!	TODO the doc
 	/*!
@@ -70,17 +73,6 @@ public:
 	*/
     void	TransformAndLightAndDrawInterpol();
 	
-
-	//!	TODO the doc
-	/*!
-		\return nothing.
-	*/
-    void	TransformAndLightAndDrawNoClip();
-	//!	TODO the doc
-	/*!
-		\return nothing.
-	*/
-    void	TransformAndLightAndDrawNoClipInterpol();
 	//!	TODO the doc
 	/*!
 		\return nothing.
@@ -91,17 +83,18 @@ public:
 		\return nothing.
 	*/    
 	void	ClippedAndLighted();
+
 	//!	TODO the doc
 	/*!
 		\return nothing.
 	*/
-    void	Transform();
+//    void	Transform();
 	//!	Draw function.
     /*!
-		Render transformed mesh. Normally you do not call this function.
+		 transformed mesh. Normally you do not call this function.
 		\return nothing.
 	*/
-    void	Draw();
+//  void	Draw();
 	//!	TODO the doc
 	/*!
 		\return an int.
@@ -128,7 +121,7 @@ public:
 	//!	Render function.
 	/*!
 	Render object using clipping and lighting.
-	\return a IrisFrustrum::e_res that allow you to know if the object was inside, outside or collided with the IrisFrustrum, .
+	\return a IrisFrustrum::e_res that allow you to know if the object was inside, outside or collided with the IrisFrustrum.
 	*/
     IrisFrustrum::e_res	Render()
     {
@@ -143,9 +136,9 @@ public:
 	//!	Render function.
 	/*!
 	Render a particular mesh in the object using passed matrix.
-	\param mesh index in the object, no check are made, be carefull
-	\param pointer to a matrix to be applied.
-	\return a IrisFrustrum::e_res that allow you to know if the object was inside, outside or collided with the IrisFrustrum, .
+	\param mesh_index mesh index in the object, no check are made, be carefull
+	\param mat pointer to a matrix to be applied.
+	\return a IrisFrustrum::e_res that allow you to know if the object was inside, outside or collided with the IrisFrustrum.
 	*/
 	IrisFrustrum::e_res	Render(uint mesh_index, matrix *mat)
 	{
@@ -157,24 +150,11 @@ public:
 		return _object->GetMesh(mesh_index).GetClipped();
 	}	
 
-	//!	RenderNoClip function.
-	/*!
-		Render object without clipping but with lighting.
-		\return nothing.
-	*/
-    void	RenderNoClip()
-    {
-        ClippedAndLighted();
-         if(_animation)
-			TransformAndLightAndDrawNoClipInterpol();
-        else
-			TransformAndLightAndDrawNoClip();
-    }
 
 	//! SetMatrix function.
 	/*!
 		Define object matrix. 
-		\param a reference on object matrix.
+		\param object_matrix a reference on object matrix.
 		\return nothing.
 	*/
     void	SetMatrix(const matrix &object_matrix)
@@ -215,7 +195,6 @@ public:
                 _current_animation = _loop_begin;
 
         }
-
         _current_animation_next = _current_animation+1;
         if(_current_animation_next >= _loop_end)
             _current_animation_next = _loop_begin;
@@ -247,9 +226,11 @@ public:
 	*/
     void	SetCurrentAnim(int i)
     {
-        if (i > _loop_end)
+		_framecount = 0;
+		if (i > _loop_end)
             i = i % _loop_end;
-        _current_animation = i;
+		_current_animation = i;
+		_current_animation_next = _current_animation + 1;
     }
 	
 	//!	SetLoopEnd function
@@ -284,6 +265,8 @@ public:
         _loop_begin = i;
         _framecount=0;
         _animation= (_loop_begin!=_loop_end);
+		_current_animation = i;
+		_current_animation_next = _current_animation + 1;
     }
 	//!	GetFPS function
 	/*!
@@ -305,12 +288,12 @@ public:
 	//!	LoadFromFile function;
 	/*!
 		Load an IMD file, initialise animation and bounding sphere.
-		\param file_path : directory where the file is located. IMD file and textures must be located in the same directory.
-		\param file_name : file name of IMD file.
-		\param scale : scale object by value.
+		\param file_path directory where the file is located. IMD file and textures must be located in the same directory.
+		\param file_name file name of IMD file.
+		\param scale scale object by value.
 		\return nothing.
 	*/
-    void	LoadFromFile(char *file_path, char *file_name,float scale=1)
+    void	LoadFromFile(char *file_path, char *file_name,float scale=1.0f)
     {
         _object = IrisContext::Get().GetObjectManager().LoadObject(file_path, file_name,scale);
         SetCurrentAnim(0);

@@ -1,20 +1,26 @@
-// quat Class
+/*********************************************************
+**  File name : quat.hpp
+**  Iris Engine V0.9 "alllaiii"
+**  Date Of Creation: 18/06/2002
+// IrisQuaternion Class
 // (c) by Heinrich Tillack 2002 (http://a128.x15.org)
 // under GPL or new BSD license
+*********************************************************/
 
-#ifndef QuatH
-#define QuatH
+
+#ifndef __IRIS_QUATERNION_H__
+#define __IRIS_QUATERNION_H__
 
 #include "vect3d.hpp"
 
 
 
-class quat
+class IrisQuaternion
 {
 public:
-    quat(){}
+    IrisQuaternion(){}
 
-    quat(float sx, float sy, float sz, float sw)
+    IrisQuaternion(float sx, float sy, float sz, float sw)
             :
             x(sx),
             y(sy),
@@ -22,7 +28,7 @@ public:
             w(sw)
     {
     }
-    ~quat(){};
+    ~IrisQuaternion(){};
 
 
     void inline Set(float sx, float sy, float sz, float sw)
@@ -38,7 +44,7 @@ public:
     }
 
 
-    void CopyQuat(quat q)
+    void CopyQuaternion(const IrisQuaternion &q)
     {
         x = q.x;
         y = q.y;
@@ -49,7 +55,7 @@ public:
     void CreateFromAxisAngle(float X, float Y, float Z, float degree)
     {
         // This function takes an angle and an axis of rotation, then converts
-        // it to a quaternion.  An example of an axis and angle is what we pass into
+        // it to a IrisQuaternionernion.  An example of an axis and angle is what we pass into
         // glRotatef().  That is an axis angle rotation.  It is assumed an angle in
         // degrees is being passed in.  Instead of using glRotatef(), we can now handle
         // the rotations our self.
@@ -66,7 +72,7 @@ public:
         // Calcualte the w value by cos( theta / 2 )
         w = fcos( angle / 2.0f );
 
-        // Calculate the x, y and z of the quaternion
+        // Calculate the x, y and z of the IrisQuaternionernion
         x = X * result;
         y = Y * result;
         z = Z * result;
@@ -75,7 +81,7 @@ public:
 
     ////////////////////////////// CREATE MATRIX \\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
     /////
-    /////	This function converts a quaternion to a rotation matrix
+    /////	This function converts a IrisQuaternionernion to a rotation matrix
     /////
     ////////////////////////////// CREATE MATRIX \\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
@@ -112,7 +118,7 @@ public:
 
 
 
-    void AxisAngleToQuat(vect3d axis, float theta)
+    void AxisAngleToQuaternion(const vect3d &axis, float theta)
     {
         float halfTheta = theta * 0.5f;
         float cosHalfTheta = fcos(halfTheta);
@@ -123,7 +129,7 @@ public:
         w = cosHalfTheta;
     }
 
-    void EulerToQuat(float roll, float pitch, float yaw)
+    void EulerToQuaternion(float roll, float pitch, float yaw)
     {
         float cr, cp, cy, sr, sp, sy, cpcy, spsy;  // calculate trig identities
         cr = fcos(roll/2);
@@ -141,39 +147,38 @@ public:
     }
 
 
-    float inline MagnitudeQuat()
+    float inline MagnitudeQuaternion()
     {
        // return mat_sqrtipr(x,y,z);
         return( fsqrt(w*w+x*x+y*y+z*z));
     }
 
-    void NormaliseQuat()
+    void NormaliseQuaternion()
     {
         float Mag;
-        Mag = MagnitudeQuat();
+        Mag = MagnitudeQuaternion();
         w = w/Mag;
         x = x/Mag;
         y = y/Mag;
         z = z/Mag;
     }
 
-    void MultQuat(quat q)
+    void MultiplyQuaternion(const IrisQuaternion &q)
     {
-        quat q3;
-        vect3d vectorq1;
-        vect3d vectorq2;
+        IrisQuaternion	q3;
+        vect3d			vectorq1;
+        vect3d			vectorq2;
         vectorq1.x = x;
         vectorq1.y = y;
         vectorq1.z = z;
         vectorq2.x = q.x;
         vectorq2.y = q.y;
         vectorq2.z = q.z;
-
-        vect3d tempvec1;
-        vect3d tempvec2;
-        vect3d tempvec3;
+        vect3d			tempvec1(vectorq1);
+        vect3d			tempvec2;
+        vect3d			tempvec3;
         tempvec1 = vectorq1;
-        q3.w = (w*q.w) - tempvec1.Dot(vectorq2);
+        q3.w = (w * q.w) - tempvec1.Dot(vectorq2);
         tempvec1.Cross(vectorq2);
         tempvec2.x = w * q.x;
         tempvec2.y = w * q.y;
@@ -181,13 +186,12 @@ public:
         tempvec3.x = q.w * x;
         tempvec3.y = q.w * y;
         tempvec3.z = q.w * z;
-        q3.x = tempvec1.x + tempvec2.x + tempvec3.x;
-        q3.y = tempvec1.y + tempvec2.y + tempvec3.y;
-        q3.z = tempvec1.z + tempvec2.z + tempvec3.z;
-        CopyQuat(q3);
+        x = tempvec1.x + tempvec2.x + tempvec3.x;
+        y = tempvec1.y + tempvec2.y + tempvec3.y;
+        z = tempvec1.z + tempvec2.z + tempvec3.z;
+		w = q3.w;
+        // CopyQuaternion(q3);
     }
-
-
     float x;
     float y;
     float z;

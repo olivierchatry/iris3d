@@ -79,6 +79,7 @@ protected:
 	void				GenerateGrid(float size, float inc);
 	size_t				_current_anim;
 	std::string			_path;
+	std::string			_file_name;
 	// Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()

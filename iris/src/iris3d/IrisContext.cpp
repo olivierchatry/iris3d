@@ -1,14 +1,12 @@
 /*********************************************************
 **  File name : IrisContext.cpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
 *********************************************************/
 
 #include	"Iris.hpp"
-
-KOS_INIT_FLAGS(INIT_DEFAULT);
 KOS_INIT_ROMDISK(romdisk);
 
 
@@ -22,6 +20,8 @@ void	IrisContext::InitContext(int vertex_buffer_size)
 	_dirty_header = true;
 	_input_manager.Init();
 	_input_manager.Update();
+	_soft_clip = false;
+	_lighting = false;
 }
 
 
@@ -45,25 +45,25 @@ void	IrisContext::DrawPrimitive(vertex2dtl v[], uint16 *indices, uint32 num_face
 		while (num_face--)
 		{
 			vertex2dtl		*the_vertex = &v[*indices++];
-			asm("pref @%0" : : "r" (&v[*indices]));
+			// asm("pref @%0" : : "r" (&v[*indices]));
 			vert->flags = (num_face == 0) ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
 			vert->x = the_vertex->x;
 			vert->y = the_vertex->y;
 			vert->z = the_vertex->z;
 			vert->u = the_vertex->u;
 			vert->v = the_vertex->v;
-			vert->argb =  the_vertex->oargb  | 0xff000000;
-			vert->oargb = 0xff000000;
+			vert->argb =  the_vertex->oargb;
+			vert->oargb = the_vertex->oargb;
 			pvr_dr_commit(vert);
 			vert = (pvr_vertex_t*) ((uint32) vert ^ 32);
 		}
 	}
-	else	//transfer to PVR and change RHW
+	else
 	{
 		while (num_face--)
 		{
 			vertex2dtl		*the_vertex = &v[*indices++];
-			asm("pref @%0" : : "r" (&v[*indices]));
+			// asm("pref @%0" : : "r" (&v[*indices]));
 			float			rhw = 1.0f / the_vertex->z;
 			vert->flags = (num_face == 0) ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
    			vert->x = the_vertex->x * rhw;
@@ -71,8 +71,8 @@ void	IrisContext::DrawPrimitive(vertex2dtl v[], uint16 *indices, uint32 num_face
 			vert->z = rhw;
 			vert->u = the_vertex->u;
 			vert->v = the_vertex->v;
-			vert->argb =  the_vertex->oargb | 0xff000000;
-			vert->oargb = 0xff000000;
+			vert->argb =  the_vertex->oargb;
+			vert->oargb = the_vertex->oargb;
 			pvr_dr_commit(vert);
 			vert = (pvr_vertex_t*) ((uint32) vert ^ 32);
 		}
@@ -122,6 +122,8 @@ uint32		IrisContext::LoadPNGFile(char *file_name, pvr_poly_cxt_t &cxt, TextureTy
 	case texture_alpha:
 		printf("[IrisContext::LoadPNGFile] loading alpha texture : %s\n", file_name);
 		pvr_poly_cxt_txr(&cxt, PVR_LIST_TR_POLY, PVR_TXRFMT_ARGB4444, img.w, img.h, txaddr, PVR_FILTER_BILINEAR);
+		cxt.txr.env = PVR_TXRENV_MODULATEALPHA;
+		cxt.txr.alpha = PVR_TXRALPHA_ENABLE;
 		break;
 	case texture_noalpha:
 		printf("[IrisContext::LoadPNGFile] loading texture : %s\n", file_name);
@@ -130,6 +132,8 @@ uint32		IrisContext::LoadPNGFile(char *file_name, pvr_poly_cxt_t &cxt, TextureTy
 	case texture_punchtru:
 		printf("[IrisContext::LoadPNGFile] loading punchtru texture : %s\n", file_name);
 		pvr_poly_cxt_txr(&cxt, PVR_LIST_PT_POLY, PVR_TXRFMT_ARGB1555, img.w, img.h, txaddr, PVR_FILTER_BILINEAR);
+		cxt.txr.env = PVR_TXRENV_MODULATEALPHA;
+		cxt.txr.alpha = PVR_TXRALPHA_ENABLE;
 		break;
 	}
 	return (uint32) txaddr;

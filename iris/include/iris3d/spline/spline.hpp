@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : spline.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 07/09/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)

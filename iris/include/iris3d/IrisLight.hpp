@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisLight.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -27,7 +27,7 @@ public:
 	//! SetColor function.
 	/*!
 		Set the color of the light.
-		\param color : a reference on a IrisColor object.
+		\param color a reference on a IrisColor object.
 		\return nothing.
 		\sa GetColor.
 	*/
@@ -38,7 +38,7 @@ public:
 	//! GetColor function.
 	/*!
 		Get the color of the light.
-		\return color : a reference on a IrisColor object.
+		\return a reference on an IrisColor object.
 		\sa SetColor.
 	*/
 	IrisColor	&GetColor()
@@ -52,18 +52,21 @@ public:
 	IrisLight()
 	{
 	}
-	//! IsInLight function.
+	//! IsInLight function test if a bounding sphere is lighted by the light
 	/*!
-		\param center : a vect3d, the center
+		\param center center of the bounding sphere
+		\param radius radius of the bounding spher
+		\return true if lighted by current light, false if not.
 	*/
 	virtual bool	IsInLight(const vect3d &center, float radius)
 	{
 		return (false);
 	}
+	
 	//! Constructor of the IrisColor class.
 	/*!
 		Copy a IrisLight object into a new one.
-		\param copy : a reference on the IrisLight object to copy.
+		\param copy a reference on the IrisLight object to copy.
 	*/
 	IrisLight(const IrisLight &copy)
 	{
@@ -73,10 +76,11 @@ public:
 		_light_type		= copy._light_type;
 		_transformation	= copy._transformation;
 	}
+	
 	//! SetId function.
 	/*!
 		Set the id of the light.
-		\param id : an int, the id of the light.
+		\param id an int, the id of the light.
 		\return nothing.
 		\sa GetId.
 	*/
@@ -84,6 +88,7 @@ public:
 	{
 		_id = id;
 	}
+	
 	//! GetId function.
 	/*!
 		Get the id of the light.
@@ -122,7 +127,7 @@ public:
 	//! SetMatrix function.
 	/*!
 		Applies transformation from a matrix to a IrisLight object.
-		\param transformation : a reference on a matrix.
+		\param transformation a reference on a matrix.
 		\return nothing.
 		\sa GetMatrix.
 	*/
@@ -133,7 +138,7 @@ public:
 	//! SetPos function.
 	/*!
 		Set the position of the light.
-		\param pas : a vect3d with the position of the light.
+		\param pos a vect3d with the position of the light.
 		\return  nothing.
 		\sa GetPos.
 	*/

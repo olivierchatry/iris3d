@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisMaterial.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -58,7 +58,7 @@ public:
 	//! SetFileName function.
 	/*!
 		Set the file name of a texture in IrisTexture object.
-		\param filename : a string, the file name of a texture.
+		\param file_name : a string, the file name of a texture.
 		\return nothing.
 	*/
 	void			SetFileName(char *file_name)	
@@ -137,26 +137,22 @@ public:
 	}
 	void	IrisMaterial::Generate(void (*fct_generate)(unsigned short *buffer, int size_x, int size_y), int size_x, int size_y, TextureType type = texture_noalpha);
 	
-	/**
-     * Load material from a .mat file (for now, .mat is in fact .PNG) 
+	/*! Load material from a .mat file (for now, .mat is in fact .PNG) 
+	 * \param file_name file name of the texture to load. must be a PNG file.
+	 * \param tex texture type (noalpha, alpha, punchthru.)
      */
     bool			LoadFromFile(char *file_name, TextureType tex = texture_noalpha);
 	
-	/**
-	 * Get texture
+	/*! Return a pointer to a given texture index
+	 * \param id index of the texture, for now, always 0.
+	 * \return a pointer to an IrisTexture obejesct.
 	 */
 	IrisTexture *	GetTexture(int id) { return &(_texture[id]); }
-    /**
-     * Get number of texture in material
-     */
+    
+	/*! Return number of texture in the material*/
     int				GetNumTexture() {return _num_texture;};
-	/**
-	 * Set temp texture id, used for loading
-	 */
+
 	void			SetTempId(int temp_id){_temp_id = temp_id;};
-	/**
-	 * Get temp texture id, used for loading
-	 */
 	int				GetTempId(void) {return (_temp_id);}
 	pvr_poly_cxt_t	*GetCxt(){return &_cxt;}
 protected:

@@ -1,0 +1,180 @@
+<html>
+<head>
+	<title>Iris3D Engine for Dreamcast tutorial 02 - Input</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link rel="stylesheet" href="css/iris.css">
+</head>
+
+<table width="640" align=center>
+<tr>
+    <th colspan=2>Iris3D Tutorial03 - Matrix</th>
+</tr>
+<tr>
+    <td class="menu"><a href="#introduction">Introduction</a></td>
+    <td class="menu">What we will see in this tutorial</td>
+</tr>
+<tr>
+    <td class="menu"><a href="#init">Pipelines and matrix</a></td>
+    <td class="menu">How to use the pipelines and transformation matrix.</td>
+</tr>
+<tr>
+    <td class="menu"><a href="html/code.html" target="_source_code">Source code</a></td>
+    <td class="menu">Source code of the sample.</td>
+</tr>
+</table>
+<br><br>
+<a name="introduction"/>
+<table width="640" align=center>
+<tr>
+    <th>Introduction</th>
+</tr>
+<tr>
+    <td>
+        In this tutorial, we will learn how to set up a geometry and lighting
+	pipeline, load a mesh, and apply transformation matrix.
+    </td>
+</tr>
+</table>
+<br><br>
+<a name="init"/>
+<table width="640" align=center>
+<tr>
+    <th>Pipelines and matrix</th>
+</tr>
+<tr>
+    <td>
+    This tutorial starts with a classical Iris Initialisation (see tutorial 1).
+    <br>
+    <br>
+    <table class="code" align=center>
+		<tr>
+			<td>
+				IrisContext &c = IrisContext::Get();<br>
+                                c.InitContext(1024 * 1024);
+				<br>
+			</td>
+		</tr>
+    </table>
+    <br>
+    </td>
+</tr>
+<tr>
+	<td>
+	The first step is to load our mesh. Iris format is called IMD. You are
+	provided a 3dsmax plugin that allows you to export any mesh data as an
+	IMD. We will provide a tutorial on using the exporter (and the IMD
+	viewer, usefull to check if everything was exported right).
+	We have to declare first a variable of type IrisObject. Then we
+	load our mesh using the LoadFromFile function. It takes two parameters:
+	a path, and a filename (both being char *).   
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+				IrisObject	sample;<br>
+				sample.LoadFromFile("/rd/", "sphere.imd");
+				<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	Then, we have to set up our Geometry Pipeline (projection, viewport and
+	camera matrix). Our SetProjection function takes three parameters: fov
+	(view angle), z min, and z max. Our Viewport is the projection screen
+	(in this case: a 640*480 screen positionned on 0,0). Our view sets the
+	camera position. The Generate() function allows us to update the
+	geometry pipeline after making our changes.
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+			c.GetGeometryPipeline().SetProjection(90.0f, 1, 10000.0f);<br>
+			c.GetGeometryPipeline().SetViewport(0.0f, 0.0f, 640.0f, 480.0f);<br>
+			c.GetGeometryPipeline().SetView(vect3d(0.0, 100.0f, 0.0),<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vect3d(0, 0.0, 1.0f),<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vect3d(0.0, 1.0, 0.0));<br>	
+			c.GetGeometryPipeline().Generate();<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	We set the ambient color:	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+		c.GetLightingPipeline().SetAmbientColor(Color(1.0f, 1.0f, 1.0f));<br>
+		c.GetLightingPipeline().Update();<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	In our main loop, we apply transformation matrix to our object. For
+	each transformation, we have to get our object matrix (using the
+	sample.GetMatrix() function). After the usual call to the Identity()
+	function (similar to the openGL function: GLloadidentity), we apply two
+	rotations and a translation (of course, you have to apply rotations
+	before translation so that the mesh rotates on itself and not
+	relatively to it's position before the translation).
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+			sample.GetMatrix().Identity();<br>
+			sample.GetMatrix().RotateY(angle._y);<br>
+			sample.GetMatrix().RotateX(angle._x);<br>
+			sample.GetMatrix().Translate(pos._x, pos._y, pos._z);<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<tr>
+	<td>
+	The rest is just about tweaking values. Notice that the angle and pos 
+	variables are of type vect3d. This type is a classical float triplet
+	provided by iris, but it also includes all the basic operations. You
+	can of course access its members independantly (_x, _y, _z).
+	</td>
+</tr>
+<tr>
+	<td>
+	In our main loop, we have to call the BeginScene() function, that sets
+	up the environment in order to start rendering. You can notice that we
+	do not call the InputManager Update function anymore, it's done
+	automatically in the BeginScene call. We render our object with the
+	Render() function (method of the IrisObject class), and we call the
+	EndScene function.
+	<br>
+	<br>
+	<table class="code" align=center>
+		<tr>
+			<td>
+			c.BeginScene();<br>
+			sample.Render();<br>
+			c.EndScene();<br>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</td>
+</tr>
+<br>
+</table>
+
+</html>

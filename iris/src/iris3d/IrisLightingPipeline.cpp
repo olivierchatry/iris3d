@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisLightingPipeline.cpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -29,13 +29,13 @@ void	IrisLightingPipeline::Compute(vect3d *vin, vertex2dtl *vout, vect3d *normal
 			(*j)->Compute(*vin, *normal, color_tmp, vout);
 		vin ++;
 		normal ++;
-		color ++;
 		color_tmp._r = color_tmp._r > 255.0f ? 255.0f : color_tmp._r;
 		color_tmp._g = color_tmp._g > 255.0f ? 255.0f : color_tmp._g;
 		color_tmp._b = color_tmp._b > 255.0f ? 255.0f : color_tmp._b;
 		vout->oargb = ((uint32) (color_tmp._r) & 0xff) << 16 |
 					  ((uint32) (color_tmp._g) & 0xff) <<  8 |
-									((uint32) (color_tmp._b) & 0xff);
+									((uint32) (color_tmp._b) & 0xff) | (*color & 0xff000000) << 24;
+		color ++;
 		vout++;
 	}
 }

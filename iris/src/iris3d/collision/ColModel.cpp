@@ -12,7 +12,7 @@ using namespace Opcode;
 
 Point	ColModel::_vertex_collide[3];
 
-ColModel::ColModel() : _model(NULL), _mesh(NULL)
+ColModel::ColModel() : _model(0), _mesh(0), _section_faces(0)
 {
 	_model = new OPCODE_Model;
 }
@@ -20,6 +20,8 @@ ColModel::ColModel() : _model(NULL), _mesh(NULL)
 ColModel::~ColModel()
 {
 	delete _model;
+    if (_section_faces)
+        delete [] _section_faces;
 }
 
 

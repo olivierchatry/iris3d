@@ -1,6 +1,6 @@
 /*********************************************************
 **	File name : IrisManualObject.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **	Date of creation: 01/07/2002
 **	Author : Olivier Chatry - Epitech Console Laboratory
 **	        (http://www.epitech.net/labconsole/)
@@ -12,10 +12,7 @@
 //!	IrisManual Object.
 /*!
 	The IrisManualObject class allow user to create an object manually by describing vertex by vertex an object. 
-	Note that these object must be stripped.
-
-	Source code : Texture loading with Manual object (sample/manualobject/).
-	Html source code : Texture loading with Manual object (sample/manualobject/).
+	Note that these object must be stripped manually.
 */
 class IrisManualObject
 {
@@ -35,7 +32,7 @@ protected:
     float						_radius;
     uint32					*_color;
 public:
-    // bug from wattel_g
+	// bug from wattel_g
 	//! Constructor for the IrisManualObject class.
 	/*!
 	*/
@@ -48,6 +45,7 @@ public:
             _material(NULL),
             _index(NULL),
             _count(0),
+			_lighted(false),
             _color(NULL)
     {}
 	//! Constructor for the IrisManualObject class.
@@ -64,6 +62,7 @@ public:
             _material(NULL),
             _index(NULL),
             _count(0),
+			_lighted(false),
             _color(NULL)
     { Allocate(count);	}
 	//! Destructor for the IrisManualObject class.
@@ -71,7 +70,7 @@ public:
 	*/
     ~IrisManualObject()
     {
-        Delete();
+        Destroy();
     }
 	//! Delete function.
 	/*!
@@ -80,7 +79,13 @@ public:
 	Note : This function is called when the IrisManualObject is destroyed.
 	\return nothing.
 	*/
-    void			Delete();
+    void			Destroy();
+	//! Return radius of the bounding sphere
+	float	&GetRadius()
+	{
+		return _radius;
+	}
+	
 	//! Allocate function.
 	/*!
 	This function allocate vertex buffer.
@@ -144,6 +149,28 @@ public:
             _2d_vertex[index].oargb = col;
         }
     }
+
+	//! Define normal for all vertex
+	/*!
+	\param normal normal value to be set
+	*/
+	void			SetNormal(const vect3d &normal)
+	{
+		int index = _count;
+		while (index --)
+			_normal[index] = normal;
+	}
+
+	//! Define normal for a given vertex index
+	/*!
+	\param index index of the normal
+	\param normal normal value to be set
+	*/
+	void			SetNormal(int index, const vect3d &normal)
+	{
+		_normal[index] = normal;
+	}
+
 	//!	PrecalculateBoundingSphere function.
 	/*!
 		This function calculate a bounding sphere around the object.
@@ -176,36 +203,16 @@ public:
     const IrisMaterial &GetMaterial() const
         { return *_material;	}
     // rendering fct
-	//!TODO the doc
-	/*!
-		\return nothing.
-	*/
     void	TransformAndLightAndDraw();
-	//!TODO the doc
-	/*!
-		\return nothing.
-	*/
     void	TransformAndLightAndDrawNoClip();
-	//!TODO the doc
-	/*!
-		\return nothing.
-	*/
     void	ClippedAndLighted();
-	//!TODO the doc
-	/*!
-		\return nothing.
-	*/
     void	Transform();
-	//! Draw function.
-	/*!
-		Render transformed mesh. Normally you do not call this function.
-		\return nothing.
-	*/
     void	Draw();
-    const matrix &GetMatrix() const { return _matrix;}
+
+	const matrix &GetMatrix() const { return _matrix;}
 	//! GetMatrix function.
 	/*!
-		\return a reference to object matrix.
+	\return a reference to object matrix.
 	*/
     matrix &GetMatrix() { return _matrix;}
 	//! Render function.
@@ -228,30 +235,16 @@ public:
 		\return nothing.
 	*/
     void	Precalculate2D();
+
 	//! Render2D function.
 	/*!
 		This function with Precalculate2D permit user to draw a texture with 2D coordinate.
-		See sample 	
-
-		Source code : Texture loading with Manual object (sample/manualobject/).
-		Html source code : Texture loading with Manual object (sample/manualobject/).
-		\return nothing.
 	*/
     void	Render2D()
     {
         IrisContext::Get().SetMaterial(_material);
         //MODIFIED by Heinrich Tillack
         IrisContext::Get().DrawPrimitive(_2d_vertex, _index, _count,true);
-    }
-	//! RenderNoClip function.
-	/*!
-		Render object without clipping but with lighting.
-		\return nothing.
-	*/
-    void	RenderNoClip()
-    {
-        ClippedAndLighted();
-        TransformAndLightAndDrawNoClip();
     }
 };
 

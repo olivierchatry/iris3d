@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : Iris.hpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
@@ -44,10 +44,14 @@ typedef unsigned int	uint;
 #include	"model/imd2.hpp"
 #include	"IrisPlane.hpp"
 #include	"IrisFrustrum.hpp"
+#include	"IrisManager.hpp"
 #include	"IrisMaterial.hpp"
 #include	"IrisMaterialManager.hpp"
 #include	"model/IrisImportObject.hpp"
 #include	"model/IrisObjectManager.hpp"
+#include	"animation/IrisSkeletal.hpp"
+#include	"animation/IrisSkeletalManager.hpp"
+
 #include	"spline/spline.hpp"
 #include	"IrisCamera.hpp"
 #include	"IrisGeometryPipeline.hpp"
@@ -71,7 +75,7 @@ typedef unsigned int	uint;
 #include	"collision/ColRayModel.hpp"
 
 // helper
-#include	"helper/IrisHelper.hpp"
+// #include	"helper/IrisHelper.hpp"
 #endif
 
 

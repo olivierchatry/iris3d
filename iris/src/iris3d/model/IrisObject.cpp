@@ -1,11 +1,9 @@
 /*********************************************************
 **  File name : IrisObject.cpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
-*********************************************************
-**	MODIFIED gruiiik : replaced for i = 0 by while (i--)
 *********************************************************/
 #include "Iris.hpp"
 
@@ -42,8 +40,8 @@ void	IrisObject::TransformAndLightAndDrawMesh(int mesh_index, matrix *mat)
 	{
 		while (section --)
 			context.DrawPrimitive(	mesh.Get2DVertex(),
-			mesh.GetSection(section).GetIndicePtr(),
-			mesh.GetSection(section).GetNumIndice());
+				mesh.GetSection(section).GetIndicePtr(),
+				mesh.GetSection(section).GetNumIndice());
 	}
 	else
 	{
@@ -57,6 +55,7 @@ void	IrisObject::TransformAndLightAndDrawMesh(int mesh_index, matrix *mat)
 void	IrisObject::TransformAndLightAndDraw()
 {
 	int			i;
+
 	i = _object->GetNumMesh();
 	while (i--)
 	{
@@ -113,101 +112,25 @@ void	IrisObject::TransformAndLightAndDrawInterpolMesh(int mesh_index, matrix *ma
 	}
 
 }
+void IrisObject::Destroy()	
+{
+	IrisContext::Get().GetObjectManager().Unload(_object);
+	_current_animation = 0;
+	_current_animation_next = 0;
+	_loop_begin = 0;
+	_loop_end = 0;
+	_framecount = 0;
+	_fps = 1;
+	_animation = false;
+}
 
 void	IrisObject::TransformAndLightAndDrawInterpol()
 {
     int			i(_object->GetNumMesh());
     while (i--)
+	{
 		TransformAndLightAndDrawInterpolMesh(i, &_object_matrix);
-}
-
-void	IrisObject::TransformAndLightAndDrawNoClip()
-{
-    int			i(_object->GetNumMesh());
-    IrisContext		&context = IrisContext::Get();
-
-	while(i--)
-    {	
-        IrisImportMesh	&mesh = _object->GetMesh(i);
-        uint32 vertex_index = _current_animation * mesh.GetNumVertex();
-        uint32 vertex_index_next = _current_animation_next * mesh.GetNumVertex();
-        uint32 *color = mesh.GetColor() + vertex_index;
-        context.SetMaterial(mesh.GetMaterial());
-        if (mesh.GetLighted())
-        {
-            _object_matrix.Load();
-            context.ProcessPrimitive(mesh.GetVertex(vertex_index), mesh.GetTransformedVertex(), mesh.GetNumVertex());
-            float* trans = _object_matrix.SaveTranslation();
-            _object_matrix.Load();
-            _object_matrix.RestoreTranslation(trans);
-            context.ProcessNormal(mesh.GetNormal(_current_animation), mesh.GetTransformedNormal(), mesh.GetNumVertex());
-            context.GetLightingPipeline().Compute(	mesh.GetTransformedVertex(), mesh.Get2DVertex(), 
-													mesh.GetTransformedNormal(), mesh.GetNumVertex(), color);
-            context.GetGeometryPipeline().LoadTrasformationMatrix();
-            context.ProcessPrimitive(mesh.GetTransformedVertex(), mesh.Get2DVertex(), mesh.GetNumVertex());
-        }
-        else
-        {
-            context.GetGeometryPipeline().LoadTrasformationMatrix();
-            _object_matrix.Apply();
-            context.ProcessPrimitiveInterpol(	_fps,_framecount,mesh.GetVertex(vertex_index), 
-												mesh.GetVertex(vertex_index_next),mesh.Get2DVertex(), 
-												mesh.GetNumVertex(), color);
-        }
-		int section = mesh.GetNumSection();
-		while (section --)
-			context.DrawPrimitive(	mesh.Get2DVertex(),
-									mesh.GetSection(section).GetIndicePtr(),
-									mesh.GetSection(section).GetNumIndice());
 	}
-}
-
-
-void	IrisObject::TransformAndLightAndDrawNoClipInterpol()
-{
-    int			i;
-    IrisContext		&context = IrisContext::Get();
-    // normal tranfo
-    // 3d convertion
-    i = _object->GetNumMesh();
-    while (i--)
-    {
-        IrisImportMesh	&mesh = _object->GetMesh(i);
-
-        context.SetMaterial(mesh.GetMaterial());
-        uint32 vertex_index = _current_animation * mesh.GetNumVertex();
-        uint32 vertex_index_next = _current_animation_next * mesh.GetNumVertex();
-        uint32 *color = mesh.GetColor();
-        if (mesh.GetLighted())
-        {
-				_object_matrix.Load();
-				//MODIFIED by Heinrich Tillack
-				context.ProcessPrimitive(	_fps,_framecount,mesh.GetVertex(vertex_index), mesh.GetVertex(vertex_index_next), 
-											mesh.GetTransformedVertex(), mesh.GetNumVertex());
-				float* trans = _object_matrix.SaveTranslation();
-				_object_matrix.Load();
-				_object_matrix.RestoreTranslation(trans);
-				context.ProcessNormal(	_fps, _framecount, mesh.GetNormal(_current_animation), 
-										mesh.GetNormal(_current_animation_next), mesh.GetTransformedNormal(), 
-										mesh.GetNumVertex());
-				context.GetLightingPipeline().Compute(	mesh.GetTransformedVertex(), mesh.Get2DVertex(), 
-														mesh.GetTransformedNormal(), mesh.GetNumVertex(), color);
-				context.GetGeometryPipeline().LoadTrasformationMatrix();
-				context.ProcessPrimitive(mesh.GetTransformedVertex(), mesh.Get2DVertex(), mesh.GetNumVertex());
-        }
-        else
-        {
-            context.GetGeometryPipeline().LoadTrasformationMatrix();
-            _object_matrix.Apply();
-            context.ProcessPrimitiveInterpol(	_fps, _framecount, mesh.GetVertex(vertex_index), mesh.GetVertex(vertex_index_next), 
-												mesh.Get2DVertex(), mesh.GetNumVertex(), color);
-        }
-		int section = mesh.GetNumSection();
-		while (section --)
-			context.DrawPrimitive(mesh.Get2DVertex(),
-			mesh.GetSection(section).GetIndicePtr(),
-			mesh.GetSection(section).GetNumIndice());
-    }
 }
 
 
@@ -227,42 +150,11 @@ void	IrisObject::ClippedAndLightedMesh(int mesh_index, matrix *mat)
 	mat->Load();
     mat_trans_single_iris(center._x, center._y, center._z);
     IrisFrustrum& f = context.GetGeometryPipeline().GetFrustrum();
-    mesh.SetClipped(f.TestSphere(center, mesh.GetRadius()));
-    if (mesh.GetClipped() != IrisFrustrum::outside && context.GetLightingPipeline().Count())
+    if (!context._soft_clip)
+		mesh.SetClipped(f.TestSphere(center, mesh.GetRadius()));
+    if (context._lighting &&  mesh.GetClipped() != IrisFrustrum::outside && context.GetLightingPipeline().Count())
         mesh.SetLighted(context.GetLightingPipeline().IsInLight(center, mesh.GetRadius()));
     else
         mesh.SetLighted(false);
 }
 
-
-void	IrisObject::Transform()
-{
-    IrisContext::Get().GetGeometryPipeline().LoadTrasformationMatrix();
-    int	i = _object->GetNumMesh();
-    while (i--)
-    {
-        IrisImportMesh	&mesh = _object->GetMesh(i);
-        if (mesh.GetClipped() == IrisFrustrum::outside)
-            continue;
-		IrisContext::Get().ProcessPrimitiveInterpol(_fps,_framecount,mesh.GetVertex(_current_animation * mesh.GetNumVertex()),
-		mesh.GetVertex(_current_animation_next * mesh.GetNumVertex()),mesh.Get2DVertex(), mesh.GetNumVertex());
-    }
-}
-
-void	IrisObject::Draw()
-{
-    IrisContext		&context = IrisContext::Get();
-    int	i = _object->GetNumMesh();
-    while (i--)
-    {
-        IrisImportMesh	&mesh = _object->GetMesh(i);
-        if (mesh.GetClipped() == IrisFrustrum::outside)
-            continue;
-        context.SetMaterial(mesh.GetMaterial());
-        int section = mesh.GetNumSection();
-        while (section --)
-            context.DrawPrimitive(mesh.Get2DVertex(),
-                                  mesh.GetSection(section).GetIndicePtr(),
-                                  mesh.GetSection(section).GetNumIndice());
-    }
-}

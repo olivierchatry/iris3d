@@ -3,7 +3,8 @@
 # Makefile (c)2002 Dan Potter
 #   
 
-OBJS =	IrisLightingPipeline.o \
+OBJS =	animation/IrisSkeletal.o\
+		animation/IrisSkeletalManager.o\
 		model/IrisObjectManager.o \
 		model/IrisImportObject.o \
 		model/IrisObject.o \
@@ -15,18 +16,24 @@ OBJS =	IrisLightingPipeline.o \
 		IrisContext.o \
 		IrisFrustrum.o \
 		IrisFaceClipper.o \
+		IrisLightingPipeline.o \
+		helper/IrisHelper.o\
 		collision/ColModel.o \
 		collision/ColModelModel.o \
 		collision/ColSphereModel.o \
 		collision/ColRayModel.o
 SUBDIRS =
+
+LWIPDIR := $(KOS_BASE)/addons/lwip/src
+LWIPARCH := kos
+
 INCLUDE_PATH = ../../include
 INCLUDE_IRIS = $(INCLUDE_PATH)/iris3d
 INCLUDE_OPCODE = $(INCLUDE_PATH)/opcode
-KOS_CFLAGS += -I/usr/local/include/stlport -I$(INCLUDE_IRIS)/ -I$(INCLUDE_OPCODE)/ -O2
 
-#-I$(INCLUDE_IRIS)/collision -I$(INCLUDE_IRIS)/math/ -I$(INCLUDE_IRIS)/input/  \
-#							-I$(INCLUDE_IRIS)/entity/ -I$(INCLUDE_IRIS)/model/ 
+KOS_CFLAGS +=	-I/usr/local/include/stlport -I$(INCLUDE_IRIS)/ -I$(INCLUDE_OPCODE)/ -O2 \
+				-I$(LWIPDIR)/include -I$(LWIPDIR)/arch/$(LWIPARCH)/include \
+				-I$(LWIPDIR)/include/ipv4/ -I$(LWIPDIR)/.. -DLWIP_DEBUG -DIRIS_HELPER
 
 myall: $(OBJS)
 	rm -f ../../lib/libiris3d.a

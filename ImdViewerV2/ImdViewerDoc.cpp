@@ -137,6 +137,7 @@ BOOL CImdViewerDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	std::string	file(lpszPathName);
 	std::string	path(file.substr(0, file.find_last_of("\\/")));
 	std::string bone_file_name(file.substr(0, file.find_last_of(".")));
+	_file_name = lpszPathName;
 	_path = path;
 	_current_anim = 0;
 	bone_file_name += ".imdbone";	
@@ -189,8 +190,12 @@ void CImdViewerDoc::Destroy()
 	CMainFrame	*pMainFrame = (CMainFrame*) GetRoutingFrame();
 	if (pMainFrame)
 		pMainFrame->GetBonesListBar().Clear();
+
 	if (_imd_object)
+	{
+		save_imd2(_imd_object, _file_name.c_str());
 		free_imd2(_imd_object);
+	}
 	if (_imd_skin_vertex)
 		delete _imd_skin_vertex;
 	_imd_skin_vertex = 0;

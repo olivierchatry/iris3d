@@ -1,6 +1,6 @@
 /*********************************************************
 **  File name : IrisFrustrum.cpp
-**	Iris Engine V0.7 "presque"
+**  Iris Engine V0.9 "alllaiii"
 **  Date Of Creation: 18/06/2002
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **					 Maes francis
@@ -82,7 +82,7 @@ IrisFrustrum::e_res IrisFrustrum::TestSphere(const vect3d& center, float radius)
 		float d = _p[i].Distance(center);
 		if (d < -radius)
 			return outside;	
-		if (d < (radius))
+		if ((d < (radius))) // just clip far plane / near plane.
 			return intersect;
 	}
 	return (inside);
