@@ -60,6 +60,7 @@ public:
 			_plugin_config._only_selected = false;
 			_plugin_config._sample_animation = false;
 			_plugin_config._sample_matrix = false;
+			_plugin_config._stich_strip = false;
 			return;
 		}
 		fread(&_plugin_config, sizeof(_plugin_config), 1, file);
@@ -83,6 +84,7 @@ public:
 		bool			_sample_animation;
 		bool			_only_selected;
 		bool			_export_bones;
+		bool			_stich_strip;
 		TimeValue		_begin_frame;
 		TimeValue		_end_frame;
 		bool			_3d_window;

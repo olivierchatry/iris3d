@@ -314,6 +314,8 @@ void	ImdExp::ExportImd2Material(imd2_object_t &object, std::string &path)
 			middle = convert_width;
 		if (middle > 512)
 			middle = 512;
+		if (middle < 8)
+			middle = 8;
 		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 		iluScale(middle, middle, 1);
 		DeleteFile(new_file_name_path.c_str());

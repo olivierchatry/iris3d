@@ -76,6 +76,7 @@ void EnableDialogObjectItem(HWND hWnd, bool enabled)
 	EnableWindow(GetDlgItem(hWnd, IDC_RADIOSAMPLEVERTEX), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_SPIN_STATIC), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_EDIT_STATIC), enabled);
+	EnableWindow(GetDlgItem(hWnd, IDC_CHECK_STICHSTRIP), enabled);
 	if (enabled)
 		EnableDialogObjectAnimationItem(hWnd, IsDlgButtonChecked(hWnd, IDC_CHECKSAMPLEANIMATION) == BST_CHECKED);
 }
@@ -151,6 +152,7 @@ INT_PTR  CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		CheckDlgButton(hWnd, IDC_RADIOSAMPLEMATRIX, exp->_plugin_config._sample_matrix ? BST_CHECKED : BST_UNCHECKED);
 		CheckDlgButton(hWnd, IDC_RADIOSAMPLEVERTEX, exp->_plugin_config._sample_matrix ? BST_UNCHECKED : BST_CHECKED);
 		CheckDlgButton(hWnd, IDC_CHECKEXPORTOBJECTDATA, exp->_plugin_config._export_object? BST_CHECKED : BST_UNCHECKED);
+		CheckDlgButton(hWnd, IDC_CHECK_STICHSTRIP, exp->_plugin_config._export_skin ? BST_CHECKED : BST_UNCHECKED);
 		EnableDialogObjectItem(hWnd, exp->_plugin_config._export_object);
 		EnableDialogBonetAnimationItem(hWnd, exp->_plugin_config._export_bones);
 		break;
@@ -170,6 +172,7 @@ INT_PTR  CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 				exp->_plugin_config._dos_log_window = IsDlgButtonChecked(hWnd, IDC_CHECKDOSLOGWINDOW) == BST_CHECKED;
 				exp->_plugin_config._sample_matrix = IsDlgButtonChecked(hWnd, IDC_RADIOSAMPLEMATRIX) == BST_CHECKED;
 				exp->_plugin_config._export_object = IsDlgButtonChecked(hWnd, IDC_CHECKEXPORTOBJECTDATA) == BST_CHECKED;
+				exp->_plugin_config._stich_strip = IsDlgButtonChecked(hWnd, IDC_CHECK_STICHSTRIP) == BST_CHECKED;
 				if (!exp->_plugin_config._sample_animation)
 				{
 					spin = GetISpinner(GetDlgItem(hWnd, IDC_SPIN_STATIC)); 

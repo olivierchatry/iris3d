@@ -7,7 +7,8 @@
 MaterialData	*ImdExp::IsMaterialAlreadyInList(Mtl *max_material)
 {
 	ImportedMaterial::material_data_list_it_t it;
-
+	if (_material_list == 0)
+		return 0;
 	for (it = _material_list->_material_data.begin(); it != _material_list->_material_data.end(); ++it)
 	{
 		MaterialData	*tmp = *it;

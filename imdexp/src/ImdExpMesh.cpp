@@ -48,7 +48,7 @@ bool			ImdExp::StripTriangularNVidia(uword *face, int count, ImportedMesh *impor
 	_log->Print("  + Stripping with NVIDIA");
 	SetCacheSize(8);
 	SetStitchStrips(false);
-	SetMinStripSize(0);
+	SetMinStripSize(_plugin_config._stich_strip);
 	SetListsOnly(false);
 	PrimitiveGroup* old_grp;	
 	GenerateStrips(face, count * 3, &old_grp, &num_section);
