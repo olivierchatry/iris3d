@@ -1,0 +1,295 @@
+------------------------------------------- --------------------------
+ IRIS 0.9 "alaiii"
+ 3-D Engine for Dreamcast, based on top of KOS
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+ Documentation
+---------------------------------------------------------------------
+
+ ...
+
+---------------------------------------------------------------------
+ ChangeLog
+---------------------------------------------------------------------
+
+Notes:
+	name[] = part concerned by bugfix, modified or added
+	{} = function name, contained in [] defined
+	() = modified, deleted or added file
+	 = code sample
+
+---------------------------------------------------------------------
+2003.05.02 - olivier
+---------------------------------------------------------------------
+* modifier the way iris handle renderstate.
+---------------------------------------------------------------------
+2003.04.23 - olivier
+---------------------------------------------------------------------
+* rewritten loading of imd & imd2 file. it's now more
+generic.
+* changed the way vertex painting are loaded into memory.
+before 3ds max plugin, a static lighting could be animated so
+each vertex of each animation frame had a color. Now, vertex painting
+are only defined once for the mesh. It take les memory.
+---------------------------------------------------------------------
+2003.04.22 - olivier
+---------------------------------------------------------------------
+* added a lot of doxygen comment. 
+* !!! changed name of some class for consistency, sorry :(:
+	Paddle --> IrisPaddle
+	InputManager --> IrisInputManager.
+	Application --> IrisApplication
+	ApplicationPart --> IrisApplicationPart
+	Context --> IrisContext, very sorry :(
+	LightingPipeline --> IrisLightingPipeline
+	GeometryPipeline --> IrisGeometryPipeline
+	OmniLight --> IrisOmniLight
+	SmousseLight --> IrisOmniLight
+	CellLight--> IrisCellLight
+	Light --> IrisLight
+	FaceClipper --> IrisFaceClipper
+---------------------------------------------------------------------
+2003.03.10 - olivier
+---------------------------------------------------------------------
+* begin writing of IrisHelper class. This class will allow
+user to change variable using network and a mfc interface.
+---------------------------------------------------------------------
+2003.02.10 - olivier
+---------------------------------------------------------------------
+* added possibility to load a png with alpha etc.
+* complety rewriten render state. Iris do not use opengl anymore.
+* vertex alpha have been removed.
+---------------------------------------------------------------------
+2003.02.05 - olivier
+---------------------------------------------------------------------
+* applyed patch for clipping from Einrich Tillack <http://a128.x15.org>
+---------------------------------------------------------------------
+2003.01.18 - olivier
+---------------------------------------------------------------------
+* corrected lighting
+---------------------------------------------------------------------
+2002.12.20 - olivier
+---------------------------------------------------------------------
+* fixes stupid bug in matrix class. 
+	you have to change all the order of transformation in your code
+	--> 
+	matrix.Translate(10.0f, 0.0f, 0.0f)
+	matrix.RotateX(1.0f);
+	became :
+	matrix.RotateX(1.0f);
+	matrix.Translate(10.0f, 0.0f, 0.0f)
+	sorry for the inconvenience
+---------------------------------------------------------------------
+2002.11.10 - oliver
+* added wrapper for opcode 
+	* ray collider
+	* aabb collider (axis aligned bounding box)
+	* obb coolider (oriented bounding box)
+	* IrisPlane collider
+---------------------------------------------------------------------
+2002.11.10 - oliver
+* iris now using opcode 1.2
+* added modification by Einrich Tillack <http://a128.x15.org>
+	* vertex interpollation 
+* working on explorter, cleaning code, adding plugin system
+---------------------------------------------------------------------
+2002.10.03 - oliver
+* changed matrix function for automatic alignement.
+* changed DrawPrimitive - optimized 
+---------------------------------------------------------------------
+
+2002.09.07 - olivier
+* added spline support for camera. Using the smousse plugin 
+coded by francis, you can export spline and use it with
+camera to create a fly by.
+* added a sample "spline" 
+
+---------------------------------------------------------------------
+
+2002.08.11 - olivier :
+* fixed color mixing when using lighting with ambient color.
+* added a new sample, a very basic game.
+
+---------------------------------------------------------------------
+
+2002.07.30 - olivier :
+* changed the way iris handle color mixing, seems to be very buggy
+
+---------------------------------------------------------------------
+
+2002.07.20 - olivier :
+* optimisation !!!!!
+* changed the way iris handle lighting
+
+---------------------------------------------------------------------
+
+2002.07.17 - OMAR
+
+- Definitively removed the 'vertex3d' class (redundant with 'vect3d')
+  and changed corresponding code. Improved the 'vect3d' with some 
+  missing operators and functionnalities.
+  Please update your code if you used 'vertex3d' in the past.
+- Removed the need for a bunch of -I directives in CFLAGS, sub-directorys 
+  are now specified when including in Iris.hpp.
+
+---------------------------------------------------------------------
+
+
+15/07/2002:
+
+*modified :
+	IrisExporter:
+		Added Prelighting.
+
+---------------------------------------------------------------------
+
+13/07/2002:
+
+* modified : 
+	IrisEngine[iris3d/|include,src|/model/IrisManualObject.|cpp.hpp|] 
+	Modified IrisManualObject, can be rendered in 2d by calling Render2D.
+	IrisEngine[iris3d/src/faceclipper.cpp] 
+	Clipping is working better.
+
+---------------------------------------------------------------------
+
+12/07/2002:
+
+* bugfixed:
+	IrisExporter : a lot of bug fix. Exporter is still more stable than ever.
+
+---------------------------------------------------------------------
+
+10/07/2002:
+
+* modified :
+	IrisEngine[iris3d/src/model/IrisImportObject.cpp] 
+	Tag is now working
+* added :
+	IrisEngine[iris3d/include/entity/ApplicationPart.hpp]:
+	Added an accessor to Application  for take an ApplicationPart 
+	(very usefull for data exchange).
+
+	IrisEngine[iris3d/include/entity/Application.hpp]:
+	Added a function InitialInit called once on init.
+
+---------------------------------------------------------------------
+
+02/07/2002 :
+
+* added:
+	IrisEngine[iris3d/|src,include|/collide/|ColModel,ColSphereModel,ColModelModel|.|hpp,cpp|]
+	opcode wrapping for iris, see sample "collide" (iris3d/sample).
+	
+	IrisEngine : A lot of sample
+	
+* bugfixed:
+	IrisEngine, IrisExporter : a lot of bug fix.
+
+---------------------------------------------------------------------
+
+25/06/2002 :
+
+* added:
+	IrisEngine[ApplicationPart] (iris3d/include/entity/ApplicationPart.hpp)
+		Added a class ApplicationPart that define a part of a game. 
+		Usefull for menu, game etc. chaining.
+		For each part you wana in your game, you have to create a new 
+		class derived from ApplicationPart and redefine the following function:
+		{Run(), Init(), Desinit(), Id()}.
+	
+	IrisEngine[Application] (iris3d/include/entity/ApplicationPart.hpp)
+		Added a class Application that handle ApplicationPart 
+		switching. For further explaination, look at the sample located in
+		sample/Application/.
+		
+	IrisEngine[Paddle] (iris3d/include/input/InputManager.hpp) :
+		Added a class Paddle that overlapping Paddle input.
+		fonction returning boolean : 
+			{a(), b(), x(), y(), Start(), Up(), Left(), Down(), Right()}
+		fonction returning a float (0.0 <= value <= 1.0) : 
+			{LeftTrigger(), RightTrigger()}.
+		fonction returning a float (-0.5 <= value <= 0.5) : 
+			{AnalogVertical(), AnalogHorizontal()}.
+		other function :
+			{GetCond()} return cont_cond_t structure.
+			{Id()}	return addr of the paddle on mapple bus.
+			{HaveVMU} return if paddle have a VMU, not implemented yet.
+		note : Yo cannot create a [Paddle] directly, you moust use 
+		[InputManager].
+		
+	IrisEngine[InputManager] (iris3d/include/input/InputManager.hpp) :
+		Added an input manager that handle device enumeration through
+		mapple bus and data refreshing (init and update explained downer).
+		For accesing paddle you have to do that :
+		(must be after call to {Context::Get()>InitRender(value);}).
+			 InputManager &m = Context::Get().GetInputManager();	
+			 for (unsigned i = 0; i < m.PaddleCount(); ++i)			
+				{																										
+					Paddle	&p = m.GetPaddle(i);											
+					p.a(); // return true if a pressed 								
+			   	p.Up(); // return true if up pressed							
+			   	p.AnalogVertical(); // return -0.5 <= value <= 0.5
+			  	p.LeftTrigger(); 	// return 0.0 <= value <= 1.0		
+			 }																										
+* modified 
+	IrisEngine[Context] (iris3d/|src,include|/Context.|hpp,cpp|) :
+		Added {GetInputManager()}, an interface to dc input. Input are 
+		initialised during the call of function {InitRender}, update are 
+		made in {BeginScene()}.
+
+---------------------------------------------------------------------
+
+24/06/2002 :
+
+* bugfixed
+	IrisEngine[MaterialManager] (iris3d/|src,include|/IrisMaterialManager.|hpp,cpp|) :
+		looping infinetly while freeing data, sometimes cause the dc to crash.
+	IrisEngine[MaterialManager] (iris3d/|src,include|/model/IrisObjectManager.|hpp,cpp|): 
+		looping infinetly while freeing data, sometimes cause the dc to crash.
+
+---------------------------------------------------------------------
+
+23/06/2002 :
+
+* bugfixed
+	IrisExporter[Crash] (Exporter/Exporter/md3_converter.cpp) : 
+		When converting many md3 to imd. Bug is not really fixed. 
+* added
+	IrisExporter[Panel] (Exporter/Exporter/|DialogStrip.|h,cpp|, ChildFrame.|h,cpp|, md3_converter.cpp|) :
+		Added configuration panel when importing an md3, this contain parameter
+		used by NVStrip Lib (library for stripping mesh). Parameters are :
+		- Cache size (dont understand what it does).
+		- Min vertex per strip.
+	Warning : in some case, defining a "min vertex per strip" superior to 0 can cause
+	garbage on mesh.
+* hidden:
+	IrisExporter[StripLib] (Exporter/lib/tc.cpp|Exporter/Include/tc.h, (Exporter/Exporter/md3_converter.cpp) :
+		Added ACTC to exporter, not used since the result are pretty much the same
+		with nvlib and take a lot more time.
+
+---------------------------------------------------------------------
+
+20/06/2002:
+
+* added 
+	IrisExporter[Panel] (Exporter/Exporter/|DialogLight.|h,cpp|, ChildFrame.|h,cpp||) :
+		added IrisLight pre-compute panel, work in progress.
+* modified
+	IrisEngine[IMD] (|iris3d/model/,Exporter/Lib/IMD/|imd.|hpp,cpp|) :
+		improved file format for pre-computing light.
+		NOTE : you have to re-export all your model.
+
+---------------------------------------------------------------------
+
+A long time ago :
+=================
+* modified
+	IrisEngine[Context] (iris3d/|src,include|/Context.|hpp,cpp|) : 
+	Context is now a singleton. For accessing context you have to do that :
+		IrisContext::Get().
+	You can use a var :
+		IrisContext &c = IrisContext::Get();.
+
+---------------------------------------------------------------------

@@ -4,19 +4,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Iris3D", "Iris3D.vcproj", "
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 2
-		SccProjectName0 = \u0022$/Iris3D\u0022,\u0020BAAAAAAA
-		SccLocalPath0 = ..\\..
-		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection0 = vc7\\Iris3D\\
-		SolutionUniqueID = {39D3E13C-380F-4982-8CC3-0D8D9F814942}
-		SccProjectUniqueName1 = Iris3D.vcproj
-		SccLocalPath1 = ..\\..
-		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection1 = vc7\\Iris3D\\
-	EndGlobalSection
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release

@@ -1,0 +1,233 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOGABOUT DIALOGEX 0, 0, 142, 66
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "About Iris Model Exporter"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,45,50,14
+    LTEXT           "Iris File Exporter For 3DS Max 5.1\nBy Olivier Chatry alias gruiiik\nEpitech Console laboratory (www.epitech.net/labconsole)",
+                    IDC_STATIC,7,7,128,37
+END
+
+IDD_DIALOGCONFIG DIALOGEX 0, 0, 298, 311
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,246,288,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,192,288,50,14
+    CONTROL         "Sample animations",IDC_CHECKSAMPLEANIMATION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,40,75,10
+    CONTROL         "Only selected object",IDC_CHECKONLYSELECTED,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,30,84,11
+    LTEXT           "From :",IDC_STATIC,24,53,22,8
+    LTEXT           "To :",IDC_STATIC,24,64,14,8
+    CONTROL         "",IDC_EDIT_END,"CustEdit",WS_TABSTOP,48,64,30,10
+    CONTROL         "",IDC_SPIN_END,"SpinnerControl",0x0,79,64,6,10
+    CONTROL         "",IDC_EDIT_BEGIN,"CustEdit",WS_TABSTOP,48,53,30,10
+    CONTROL         "",IDC_SPIN_BEGIN,"SpinnerControl",0x0,79,53,6,10
+    CONTROL         "Export bones data",IDC_CHECKBONES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,150,75,10
+    CONTROL         "Export skin data",IDC_CHECKSKIN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,115,68,10
+    GROUPBOX        "Object",IDC_STATIC,6,6,102,126
+    GROUPBOX        "Bones",IDC_STATIC,6,138,288,84
+    EDITTEXT        IDC_EDIT_BONE_FILE,12,198,252,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_BONE_FILE,270,198,19,14
+    LTEXT           "Imd MAX Exporter @2003 - Epitech Console Laboratory.",
+                    IDC_STATIC,6,295,186,8
+    CONTROL         "Sample Matrix",IDC_RADIOSAMPLEMATRIX,"Button",
+                    BS_AUTORADIOBUTTON,30,78,74,10
+    CONTROL         "Sample Vertex",IDC_RADIOSAMPLEVERTEX,"Button",
+                    BS_AUTORADIOBUTTON,30,91,60,10
+    GROUPBOX        "Debug",IDC_STATIC,6,228,288,54
+    CONTROL         "Open 3D Viewer when finished export.",IDC_CHECK3DVIEWER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,241,139,10
+    CONTROL         "Open Log Window.",IDC_CHECKLOGWINDOW,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,252,150,10
+    CONTROL         "Open DOS Log Window (If you close it, 3DS Max will also be closed).",
+                    IDC_CHECKDOSLOGWINDOW,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,12,265,234,10
+    LTEXT           "Static Frame :",IDC_STATIC,12,102,46,8
+    CONTROL         "",IDC_EDIT_STATIC,"CustEdit",WS_TABSTOP,60,102,30,10
+    CONTROL         "",IDC_SPIN_STATIC,"SpinnerControl",0x0,91,102,6,10
+    CONTROL         "Export object data",IDC_CHECKEXPORTOBJECTDATA,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,18,84,10
+    LTEXT           "Sample Matrix Animation :",IDC_STATIC,12,162,84,8
+    LTEXT           "From :",IDC_STATIC,30,174,22,8
+    LTEXT           "To :",IDC_STATIC,30,185,14,8
+    CONTROL         "",IDC_EDIT_BONE_END,"CustEdit",WS_TABSTOP,54,185,30,10
+    CONTROL         "",IDC_SPIN_BONE_END,"SpinnerControl",0x0,85,185,6,10
+    CONTROL         "",IDC_EDIT_BONE_BEGIN,"CustEdit",WS_TABSTOP,54,174,30,
+                    10
+    CONTROL         "",IDC_SPIN_BONE_BEGIN,"SpinnerControl",0x0,85,174,6,10
+    CONTROL         "",IDC_TREESCENE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | WS_TABSTOP,114,6,180,
+                    126,WS_EX_CLIENTEDGE
+END
+
+IDD_DIALOGLOG DIALOGEX 0, 0, 253, 226
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_OVERLAPPEDWINDOW
+CAPTION "IMD Exporter Log"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,192,201,54,18,BS_FLAT | WS_DISABLED
+    EDITTEXT        IDC_EDITLOG,7,7,239,191,ES_MULTILINE | ES_AUTOHSCROLL | 
+                    ES_READONLY | WS_VSCROLL | WS_HSCROLL,
+                    WS_EX_DLGMODALFRAME
+END
+
+IDD_DIALOGVIEWER DIALOGEX 0, 0, 320, 202
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION ":: D3D Viewer ::"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOGABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 135
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 59
+    END
+
+    IDD_DIALOGCONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 291
+        VERTGUIDE, 12
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 304
+        HORZGUIDE, 12
+        HORZGUIDE, 23
+        HORZGUIDE, 35
+        HORZGUIDE, 61
+        HORZGUIDE, 113
+    END
+
+    IDD_DIALOGLOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 246
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 219
+    END
+
+    IDD_DIALOGVIEWER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAPTREE          BITMAP                  "bitmaptree.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_LIBDESCRIPTION      "Export to an Iris Model file Format (imd)"
+    IDS_IMDEXP              "ImdExp"
+    IDS_CATEGORY            "Standard"
+    IDS_IMDEXTENSION        "IMD"
+    IDS_LONGDESCRIPTION     "Iris Object Model Exporter"
+    IDS_SHORTDESCRIPTION    "IMD Exporter"
+    IDS_ME                  "Chatry Olivier alias gruiiik"
+    IDS_COPYRIGHT           "Made for Iris Engine. Epitech Console Laboratory (www.epitech.net/labconsole)"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
