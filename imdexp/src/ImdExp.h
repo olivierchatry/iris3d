@@ -16,7 +16,7 @@ extern TCHAR *GetString(int id);
 extern HINSTANCE hInstance;
 
 
-#define IMDEXP_VERSION			100			// Version number * 100
+#define IMDEXP_VERSION			102			// Version number * 100
 //#define FLOAT_OUTPUT	_T("%4.4f")	// Float precision for output
 #define CFGFILENAME		_T("IMDEXP.CFG")	// Configuration file
 
@@ -50,7 +50,18 @@ public:
 	{
 		FILE *file = fopen(CFGFILENAME, "rb");
 		if (file == NULL)
+		{
+			_plugin_config._3d_window = false;
+			_plugin_config._dos_log_window = false;
+			_plugin_config._export_bones = false;
+			_plugin_config._export_object = true;
+			_plugin_config._export_skin = false;
+			_plugin_config._log_window = true;
+			_plugin_config._only_selected = false;
+			_plugin_config._sample_animation = false;
+			_plugin_config._sample_matrix = false;
 			return;
+		}
 		fread(&_plugin_config, sizeof(_plugin_config), 1, file);
 		fclose(file);
 	}
