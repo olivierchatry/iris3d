@@ -99,6 +99,7 @@ protected:
 	void	SaveObjectFile(const TCHAR *c_file_name);
 	void SaveBoneFile(const TCHAR *c_file_name, ImportedBone *bones);
 	void	ExportImd2Material(imd2_object_t &object, std::string &path);
+	MaterialData *IsMaterialAlreadyInList(Mtl *max_material);
 	std::string	GetFilePath(std::string str);
 	std::string	GetFileName(std::string str);
 	std::string	GetFileNameWithoutExtension(std::string str);
