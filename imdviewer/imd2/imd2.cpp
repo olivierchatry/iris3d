@@ -80,6 +80,13 @@ imd2_object_t	*load_imd2(const char *file_name)
 			imd2_mesh->imd2_vertex = new imd2_vertex_t[imd2_mesh->imd2_mesh_header.num_vertex * pImdObject->imd2_object_header.num_anim];
 			fread(imd2_mesh->imd2_vertex, sizeof(imd2_vertex_t), imd2_mesh->imd2_mesh_header.num_vertex * pImdObject->imd2_object_header.num_anim , file);
 		}
+
+		D3DXVECTOR3 pivot = D3DXVECTOR3(&imd2_mesh->imd2_matrix->m[12]);
+		for(int i=0; i<imd2_mesh->imd2_mesh_header.num_vertex; i++)
+		{
+			(*(D3DXVECTOR3*)imd2_mesh->imd2_vertex[i].pos) += pivot;
+		}
+
 		//normalize_all(imd2_mesh->imd2_vertex, imd2_mesh->imd2_mesh_header.num_vertex * pImdObject->imd2_object_header.num_anim);
 		fread(&(imd2_mesh->imd2_face.num_section) , sizeof(imd2_mesh->imd2_face.num_section), 1, file);
 		imd2_mesh->imd2_face.imd2_section = new imd2_face_section_t[imd2_mesh->imd2_face.num_section];

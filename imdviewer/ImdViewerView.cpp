@@ -18,7 +18,7 @@
 
 const int	grid_size = 80;
 const float grid_increment = 10.0f;
-const int	grid_primitive_count = grid_size * grid_size * 4;
+const int	grid_primitive_count = grid_size * grid_size * 4 + 3;
 // CImdViewerView
 
 IMPLEMENT_DYNCREATE(CImdViewerView, CView)
@@ -32,8 +32,8 @@ END_MESSAGE_MAP()
 
 // CImdViewerView construction/destruction
 
-CImdViewerView::CImdViewerView() : _capture_mouvement(false), _position(0.0f, -2.0f, 0.0f), 
-_at(0.0f, 0.0f, 0.0f), _up(0.0f, 0.0f, 1.0f), _d3d_device(0),
+CImdViewerView::CImdViewerView() : _capture_mouvement(false), _position(0.0f, 0.0f, -2.0f), 
+_at(0.0f, 0.0f, 0.0f), _up(0.0f, 1.0f, 0.0f), _d3d_device(0),
 _object(0), _d3d_backbuffer(0), _d3d_depthbuffer(0), _d3d_object(0), _current_anim(0)
 ,_bone(0), _use_bone_for_animation(false)
 {
@@ -92,22 +92,29 @@ void CImdViewerView::CreateGrid(int size, float increment)
 {
 	float	middle = (float) size / 2.0f;
 	float	inc_middle = increment / 2.0f;
-	_vb_grid.Allocate(_d3d_device, size * size * 8, D3DPT_LINELIST);
+	_vb_grid.Allocate(_d3d_device, size * size * 8 + 6, D3DPT_LINELIST);
 	vertex3d_t	*v = _vb_grid.Lock();
 	for (float x = -middle; x < middle; ++x)
 	{
 		for (float y = - middle; y < middle; ++y)
 		{
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, (y * increment) - inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, (y * increment) + inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, (y * increment) + inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, (y * increment) + inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, (y * increment) + inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, (y * increment) - inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, (y * increment) - inc_middle, 0.0f);v++;
-			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, (y * increment) - inc_middle, 0.0f);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, 0.0f, (y * increment) - inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, 0.0f, (y * increment) + inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, 0.0f, (y * increment) + inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, 0.0f, (y * increment) + inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, 0.0f, (y * increment) + inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, 0.0f, (y * increment) - inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) + inc_middle, 0.0f, (y * increment) - inc_middle);v++;
+			v->_color = 0xffffffff;v->_pos = D3DXVECTOR3((x * increment) - inc_middle, 0.0f, (y * increment) - inc_middle);v++;
 		}	
 	}
+	v->_color = 0xffff0000;v->_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);v++;
+	v->_color = 0xffff0000;v->_pos = D3DXVECTOR3(increment, 0.0f, 0.0f);v++;
+	v->_color = 0xff00ff00;v->_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);v++;
+	v->_color = 0xff00ff00;v->_pos = D3DXVECTOR3(0.0f, increment, 0.0f);v++;
+	v->_color = 0xff0000ff;v->_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);v++;
+	v->_color = 0xff0000ff;v->_pos = D3DXVECTOR3(0.0f, 0.0f, increment);v++;
+
 	_vb_grid.Unlock();
 }
 
@@ -257,7 +264,7 @@ void CImdViewerView::UpdateCamera()
 	D3DXVec3Cross(&_inv_strafe_left, &_up, &_direction);
 	D3DXVec3Normalize(&_inv_strafe_left, &_inv_strafe_left);		
 	RotateAt(_angle_z, &_inv_strafe_left);
-	RotateAt(_angle_y, &D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+	RotateAt(_angle_y, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 	D3DXVec3Normalize(&_direction, &_direction);
 	_inv_direction = -_direction;
 	_strafe_left = -_inv_strafe_left;
@@ -393,6 +400,8 @@ void	CImdViewerView::FillVertexBuffer(VBILVect3d &vb, imd2_mesh_t *mesh, int ani
 		for (int i = 0; i < vertex_count; ++i)
 			skin->num_skin += mesh->imd2_skin[i].num_bones_assigned;
 		skin->skin = new Skin[skin->num_skin];
+		skin->pivot = D3DXVECTOR3(&mesh->imd2_matrix->m[12]);
+		D3DXMatrixIdentity((D3DXMATRIX*)&mesh->imd2_matrix->m);
 	}
 	int skin_idx = 0;
 	for (int v = 0; v < vertex_count; ++v)
@@ -551,7 +560,7 @@ void	CImdViewerView::SetBoneFile(imd2_bone_file_t *bone)
 }
 
 
-vertex3d_t *CImdViewerView::RecursiveFillVertex(std::vector<Bone> &bones, vertex3d_t *v, Bone *parent_bone)
+vertex3d_t *CImdViewerView::RecursiveFillVertex(std::vector<Bone> &bones, vertex3d_t *v, Bone *parent_bone, int mesh_index)
 {
 	for (size_t i = 0; i < bones.size(); ++i)
 	{		
@@ -577,7 +586,7 @@ vertex3d_t *CImdViewerView::RecursiveFillVertex(std::vector<Bone> &bones, vertex
 		}
 		else
 			_matrix[bones[i].bone_index] = bone_anim->matrix;
-		v = RecursiveFillVertex(bones[i].child, v, &(bones[i]));
+		v = RecursiveFillVertex(bones[i].child, v, &(bones[i]), mesh_index);
 		if (_object)
 		{
 			D3DXMATRIX	object_matrix(_object->imd2_mesh[0].imd2_matrix[0].m);
@@ -592,7 +601,7 @@ vertex3d_t *CImdViewerView::RecursiveFillVertex(std::vector<Bone> &bones, vertex
 void	CImdViewerView::FillBoneVertexBuffer()
 {
 	vertex3d_t	*v = _vb_bone.Lock();
-	RecursiveFillVertex(_bone_hier, v, 0);
+	RecursiveFillVertex(_bone_hier, v, 0, 0);
 	_vb_bone.Unlock();
 }
 
@@ -618,14 +627,14 @@ void	CImdViewerView::SkinnedAnimation()
 	{
 		Mesh &mesh = _skin_mesh[i];
 		vertex3d_t	*dest = _vb[i].Lock();
-
-		// reset all vertices
 		vertex3d_t	*tmp = dest;
 		int	n = mesh.num_vertex;
-		while (n--)
+
+		for (int s = 0; s < mesh.num_skin; ++s)
 		{
-			tmp->_pos = D3DXVECTOR3(0, 0, 0);
-			tmp++;
+			Skin &skin = mesh.skin[s];
+			int	vi = skin.vertex_index;
+			dest[vi]._pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		}
 		D3DXMATRIX	mat;
 		// for each vertex
@@ -634,20 +643,12 @@ void	CImdViewerView::SkinnedAnimation()
 			Skin &skin = mesh.skin[s];
 			imd2_bone_anim_t	*bone = &(_bone->bones[skin.bone_index].imd2_bone_anim[_current_anim]);
 			int	vi = skin.vertex_index;
-			D3DXVECTOR3	bone_pos(bone->pos);
 			D3DXVECTOR3	pos(mesh.v[vi]._pos);
 			D3DXVECTOR3 pre;
 			D3DXVECTOR3 trans;
-			pre.x = pos.x - bone_pos.x;
-			pre.y = pos.y - bone_pos.y;
-			pre.z = pos.z - bone_pos.z;
+			pre = pos + mesh.pivot;
 			D3DXVec3TransformCoord(&trans, &pre, &_matrix[skin.bone_index]);
-			dest[vi]._pos.x += (trans.x + bone_pos.x) * skin.weight;
-			dest[vi]._pos.y += (trans.y + bone_pos.y) * skin.weight;
-			dest[vi]._pos.z += (trans.z + bone_pos.z) * skin.weight;
-/*			dest[vi]._pos.x += (trans.x) * skin.weight;
-			dest[vi]._pos.y += (trans.y) * skin.weight;
-			dest[vi]._pos.z += (trans.z) * skin.weight;*/
+			dest[vi]._pos += (trans/* + mesh.pivot - bone_pos*/) * skin.weight;
 			continue;
 		}
 		_vb[i].Unlock();

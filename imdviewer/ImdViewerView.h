@@ -24,6 +24,7 @@ struct Mesh
 	int			num_vertex;
 	Skin		*skin;
 	vertex3d_t	*v;
+	D3DXVECTOR3 pivot;
 };
 
 class CImdViewerView : public CView
@@ -125,7 +126,7 @@ protected:
 	VBVect3d			_vb_bone;
 	VBVect3d			_vb_tag;
 	void	RecursiveSetBone(Bone *bone, int parent_index);
-    vertex3d_t *RecursiveFillVertex(std::vector<Bone> &bones, vertex3d_t *v, Bone *parent_bone);
+    vertex3d_t *RecursiveFillVertex(std::vector<Bone> &bones, vertex3d_t *v, Bone *parent_bone, int mesh_index);
 	void	FillBoneVertexBuffer();
 	bool	_use_bone_for_animation;
 	void	SkinnedAnimation();
