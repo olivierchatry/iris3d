@@ -72,7 +72,9 @@ void ImdExp::ImportBoneAnimation(INode *node, BoneData *bone_data)
 		TimeValue tv = i * inc;
 		bone_data->_animation.push_back(BoneAnim());
 		BoneAnim &bone_anim = bone_data->_animation.back();
-		bone_anim.matrix = FixCoordSys(baseTM * node->GetNodeTM(tv));
+		Matrix3 nodeTM = node->GetNodeTM(tv);
+		bone_anim.matrix = FixCoordSys(baseTM*nodeTM);
+		bone_anim.matrix.NoScale();
 		bone_anim.pos = Point3(0.0f, 0.0f, 0.0f);
 	}
 }

@@ -396,8 +396,10 @@ void	ImdExp::ExportImd2Mesh(imd2_object_t &object)
 					{
 						int offset = vertex_count * index_anim + index_vertex;
 						MeshData &mesh_data = imesh->_mesh_data[index_anim];
-												mesh_data._vertex[index_vertex] = mesh_data._matrix * mesh_data._vertex[index_vertex];
-						mesh_data._normal[index_vertex] = mesh_data._matrix * mesh_data._normal[index_vertex];
+						mesh_data._vertex[index_vertex] = mesh_data._matrix * mesh_data._vertex[index_vertex];
+						Matrix3	tmp = 	mesh_data._matrix ;
+						tmp.NoTrans();
+						mesh_data._normal[index_vertex] = tmp * mesh_data._normal[index_vertex];
 						memcpy(mesh->imd2_vertex[offset].normal, mesh_data._normal[index_vertex], sizeof(float) * 3);
 						memcpy(mesh->imd2_vertex[offset].pos, mesh_data._vertex[index_vertex], sizeof(float) * 3);
 						uint r = (uint) (imesh->_mesh_color_mapping._color[index_vertex].x * 255) & 0xff;

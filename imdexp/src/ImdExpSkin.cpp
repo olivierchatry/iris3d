@@ -51,7 +51,7 @@ ImportedSkin*	ImdExp::ImportSkinData(INode *node, ImportedMesh *imesh)
 				}
 				pw._point_index = i;
 				iskin->_skin_data[bone]._point_weight.push_back(pw);
-				iskin->_skin_data[bone]._bone_index = assigned_bone;
+				iskin->_skin_data[bone]._bone_index = GetBoneIndex(bone); 
 				if (pw._weight == 1.0f)
 					break; // go next point.
 			}

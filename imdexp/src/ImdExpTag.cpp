@@ -30,7 +30,8 @@ ImportedTag *ImdExp::ImportTagObject(INode *node, TriObject *tri_object, ObjectS
 	for (TimeValue i = _plugin_config._begin_frame; i <= _plugin_config._end_frame; i ++)
 	{
 		AffineParts	ap;
-		Matrix3		m  = FixCoordSys(offset_matrix * node->GetNodeTM(i * inc) * Inverse(node->GetParentTM(i * inc)));
+		TimeValue	tv = i * inc;
+		Matrix3		m  = FixCoordSys(offset_matrix * node->GetNodeTM(tv) * Inverse(node->GetParentTM(tv)));
 		TagData		*tag_data = new TagData;	
 		imported_tag->_tag_data[tag_index ++] = tag_data;
 		tag_data->_pos = m * GetCenter(mesh);

@@ -158,7 +158,10 @@ void	ImdExp::ImportTriangularMapping(Mesh *mesh, ImportedMesh *imesh, uword *fac
 
 bool	ImdExp::ImportTriangularFace(Mesh *mesh, ImportedMesh *imported_mesh)
 {
+	
 	int		face_count = mesh->getNumFaces();
+	if (face_count == 0)
+		return false;
 	int		face_count_3 = face_count * 3;
 	Face	*faces = mesh->faces;
 	int		count = face_count;
@@ -183,19 +186,15 @@ bool	ImdExp::ImportTriangularFace(Mesh *mesh, ImportedMesh *imported_mesh)
 		return true;
 }
 
-TriObject* GetTriObjectFromNode(INode *node, TimeValue t, bool &deleteIt)
+TriObject* GetTriObjectFromNode(INode *node, TimeValue t)
 {
-	deleteIt = false;
 	Object *obj = node->EvalWorldState(t).obj;
-	if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0))) { 
-		TriObject *tri = (TriObject *) obj->ConvertToType(t, 
-			Class_ID(TRIOBJ_CLASS_ID, 0));
-		if (obj != tri) deleteIt = true;
+	if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0))) 
+	{ 
+		TriObject *tri = (TriObject *) obj->ConvertToType(t, Class_ID(TRIOBJ_CLASS_ID, 0));
 		return tri;
 	}
-	else {
-		return 0;
-	}
+	return 0;
 }
 
 
@@ -222,16 +221,13 @@ ImportedMesh *ImdExp::ImportTriangularObject(INode *node, TriObject *tri_object,
 	for (TimeValue i = _plugin_config._begin_frame; i <= _plugin_config._end_frame; i ++)
 	{
 		AffineParts	ap;
-		bool		delete_mesh;
-		TriObject	*triobj = GetTriObjectFromNode(node, i * inc,delete_mesh);
+		TimeValue	tv = i * inc;
+		TriObject	*triobj = GetTriObjectFromNode(node, tv);
 		Mesh		&the_mesh = triobj->GetMesh();
-		Matrix3		m  =  FixCoordSys(node->GetObjTMAfterWSM(i * inc));	
 		MeshData	&mesh_data = imported_mesh->_mesh_data[mesh_index++];
-		MeshMap&	mesh_map = the_mesh.Map(1);
-
+		mesh_data._matrix =  FixCoordSys(node->GetObjTMAfterWSM(tv));	
 		the_mesh.buildNormals();
 		mesh_data.Allocate(vertex_count);
-		mesh_data._matrix = m; // define matrix tranformation.
 		for (int v = 0; v < vertex_count; ++v)
 		{													
 			mesh_data._vertex[v] = the_mesh.getVert(v);
@@ -241,7 +237,10 @@ ImportedMesh *ImdExp::ImportTriangularObject(INode *node, TriObject *tri_object,
 	_log->Printf("Non modified Num vertex  : %d", vertex_count);
 	// stripping des faces, mapping et couleur.
 	if (ImportTriangularFace(&mesh, imported_mesh) == false)
+	{
+		delete imported_mesh;
 		return 0;
+	}
 	_log->Printf("Num vertex, normal, color : %d", imported_mesh->_mesh_data[0]._vertex.size());
 	_log->Printf("Num mapping : %d", imported_mesh->_mesh_color_mapping._mapping.size());
 	_log->Printf("Num face : %d", imported_mesh->_face_total);
