@@ -1,0 +1,6 @@
+LIBRARY	octree
+EXPORTS
+	GetPluginInfo
+	CreateInstance
+SECTIONS
+	.data READ WRITE

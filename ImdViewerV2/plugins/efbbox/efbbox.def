@@ -1,0 +1,6 @@
+LIBRARY	efbbox
+EXPORTS
+	GetPluginInfo
+	CreateInstance
+SECTIONS
+	.data READ WRITE

@@ -1,0 +1,37 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImdViewer", "ImdViewer.vcproj", "{E676CFA5-E95D-4336-B9A2-447CE930DB95}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "efbbox", "plugins\efbbox\efbbox.vcproj", "{E11891AF-C5C8-4731-BDB7-401EB962979C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "octree", "plugins\octree\octree.vcproj", "{E11891AF-C5C8-4731-BDB7-401EB962979C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{E676CFA5-E95D-4336-B9A2-447CE930DB95}.Debug.ActiveCfg = Debug|Win32
+		{E676CFA5-E95D-4336-B9A2-447CE930DB95}.Debug.Build.0 = Debug|Win32
+		{E676CFA5-E95D-4336-B9A2-447CE930DB95}.Release.ActiveCfg = Release|Win32
+		{E676CFA5-E95D-4336-B9A2-447CE930DB95}.Release.Build.0 = Release|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Debug.ActiveCfg = Debug|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Debug.Build.0 = Debug|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Release.ActiveCfg = Release|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Release.Build.0 = Release|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Debug.ActiveCfg = Debug|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Debug.Build.0 = Debug|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Release.ActiveCfg = Release|Win32
+		{E11891AF-C5C8-4731-BDB7-401EB962979C}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
