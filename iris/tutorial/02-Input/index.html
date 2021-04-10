@@ -1,244 +1,243 @@
 <html>
-<head>
-	<title>Iris3D Engine for Dreamcast tutorial 02 - Input</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="stylesheet" href="css/iris.css">
-</head>
+  <head>
+    <title>Iris3D Engine for Dreamcast tutorial 02 - Input</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="css/iris.css" />
+  </head>
 
-<table width="640" align=center>
-<tr>
-    <th colspan=2>Iris3D Tutorial02 - Input</th>
-</tr>
-<tr>
-    <td class="menu"><a href="#introduction">Introduction</a></td>
-    <td class="menu">What we will see in this tutorial</td>
-</tr>
-<tr>
-    <td class="menu"><a href="#init">Using the InputManager</a></td>
-    <td class="menu">How to access the controllers.</td>
-</tr>
-<tr>
-    <td class="menu"><a href="html/code.html" target="_source_code">Source code</a></td>
-    <td class="menu">Source code of the sample.</td>
-</tr>
-</table>
-<br><br>
-<a name="introduction"/>
-<table width="640" align=center>
-<tr>
-    <th>Introduction</th>
-</tr>
-<tr>
-    <td>
-        In this tutorial, we will learn how to access the controllers and
-        check which keys are pressed.
-    </td>
-</tr>
-</table>
-<br><br>
-<a name="init"/>
-<table width="640" align=center>
-<tr>
-    <th>Using the Input Manager</th>
-</tr>
-<tr>
-    <td>
-    This tutorial begins with a simple function that prints in the console
-    which key have been pressed. You can notice that: <br>
-    - a, b, x, y keys pressed return a boolean<br>
-    - analog stick and trigger return a float value.
-    <br><br>
-    </td>
-</tr>
-<tr>
-    <td>
-    This tutorial starts with a classical Iris Initialisation (see tutorial 1).
-    <br>
-    <br>
-    <table class="code" align=center>
-		<tr>
-			<td>
-				IrisContext &c = IrisContext::Get();<br>
-                                c.InitContext(1024 * 1024);
-				<br>
-			</td>
-		</tr>
-    </table>
-    <br>
-    </td>
-</tr>
-<tr>
-    <td>
-    After testing if at least one controller is plugged in, we start our main
-    loop. For each frame, we update the InputManager and test every plugged in
-    controller. We use our display_paddle_info to print each controller
-    informations. We exit our main loop if start button is pressed on every
-    controller.
-    <br>
-    <br>
-    <table class="code" align=center>
-            <tr>
-		<td>
-                InputManager	&im = c.GetInputManager();
-                <br>
-                bool done = false;
-                <br>
-                while (!done)
-                <br>
-                {
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;im.Update();
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;done = true;
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;for (unsigned i = 0; i < im.ControllerCount(); ++i)
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;{
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrisController &p = im.GetController(i);
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display_paddle_info(p);
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done &= p.Start();
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;}
-                <br>
-                }
-                <br>
-                </td>
-            </tr>
-    </table>
-    <br>
-    </td>
-</tr>
-<tr>
-    <td>
-    Here is a list of available functions to test the controller's buttons:
-    <br><br>
-    <table align="center" class="ice" width="90%">
+  <table width="640" align="center">
     <tr>
-        <td>
-            <b>IrisController::Up()</b>
-        </td>
+      <th colspan="2">Iris3D Tutorial02 - Input</th>
     </tr>
     <tr>
-        <td>
-            Return true if up is pressed, false if not 
-        </td>
+      <td class="menu"><a href="#introduction">Introduction</a></td>
+      <td class="menu">What we will see in this tutorial</td>
     </tr>
     <tr>
-        <td>
-            <b>IrisController::Right() </b>
-        </td>
+      <td class="menu"><a href="#init">Using the InputManager</a></td>
+      <td class="menu">How to access the controllers.</td>
     </tr>
     <tr>
-        <td>
-        Return true if Right is pressed, false if not
-        </td>
+      <td class="menu">
+        <a href="html/code.html" target="_source_code">Source code</a>
+      </td>
+      <td class="menu">Source code of the sample.</td>
+    </tr>
+  </table>
+  <br /><br />
+  <a name="introduction" />
+  <table width="640" align="center">
+    <tr>
+      <th>Introduction</th>
     </tr>
     <tr>
-        <td>
-            <b>IrisController::Left() </b>
-        </td>
+      <td>
+        In this tutorial, we will learn how to access the controllers and check
+        which keys are pressed.
+      </td>
+    </tr>
+  </table>
+  <br /><br />
+  <a name="init" />
+  <table width="640" align="center">
+    <tr>
+      <th>Using the Input Manager</th>
     </tr>
     <tr>
-        <td>
-        Return true if Left is pressed, false if not
-        </td>
+      <td>
+        This tutorial begins with a simple function that prints in the console
+        which key have been pressed. You can notice that: <br />
+        - a, b, x, y keys pressed return a boolean<br />
+        - analog stick and trigger return a float value.
+        <br /><br />
+      </td>
     </tr>
     <tr>
-        <td>
-            <b>IrisController::a() </b>
-        </td>
+      <td>
+        This tutorial starts with a classical Iris Initialisation (see tutorial
+        1).
+        <br />
+        <br />
+        <table class="code" align="center">
+          <tr>
+            <td>
+              IrisContext &c = IrisContext::Get();<br />
+              c.InitContext(1024 * 1024);
+              <br />
+            </td>
+          </tr>
+        </table>
+        <br />
+      </td>
     </tr>
     <tr>
-        <td>
-        Return true if a is pressed, false if not
-        </td>
+      <td>
+        After testing if at least one controller is plugged in, we start our
+        main loop. For each frame, we update the InputManager and test every
+        plugged in controller. We use our display_paddle_info to print each
+        controller informations. We exit our main loop if start button is
+        pressed on every controller.
+        <br />
+        <br />
+        <table class="code" align="center">
+          <tr>
+            <td>
+              InputManager &im = c.GetInputManager();
+              <br />
+              bool done = false;
+              <br />
+              while (!done)
+              <br />
+              {
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;im.Update();
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;done = true;
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;for (unsigned i = 0; i <
+              im.ControllerCount(); ++i)
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrisController &p
+              = im.GetController(i);
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display_paddle_info(p);
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done &= p.Start();
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}
+              <br />
+              }
+              <br />
+            </td>
+          </tr>
+        </table>
+        <br />
+      </td>
     </tr>
     <tr>
-        <td>
-            <b>IrisController::b() </b>
-        </td>
+      <td>
+        Here is a list of available functions to test the controller's buttons:
+        <br /><br />
+        <table align="center" class="ice" width="90%">
+          <tr>
+            <td>
+              <b>IrisController::Up()</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if up is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::Right() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if Right is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::Left() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if Left is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::a() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if a is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::b() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if b is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::x() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if x is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::y() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>Return true if y is pressed, false if not</td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::HaveVMU() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Return true if the IrisController have a VMU inserted, false if
+              not Note :This function is not implemeted. It return false in any
+              case.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::LeftTrigger() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Return a value between 0.0f and 1.0f representing how the left
+              trigger is pushed. (non pushed = 0.0f, full pushed = 1.0f)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::RightTrigger() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Return a value between 0.0f and 1.0f representing how the right
+              trigger is pushed. (non pushed = 0.0f, full pushed = 1.0f)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::AnalogVertical() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Return a value between -0.5f and 0.5f representing how the
+              vertical analog joypad is pushed. (non pushed = 0.0f, full pushed
+              up = 0.5f, full pushed down = -0.5f)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>IrisController::AnalogHorizontal() </b>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Return a value between -0.5f and 0.5f representing how the
+              horizontal analog joypad is pushed. (non pushed = 0.0f, full
+              pushed up = 0.5f, full pushed down = -0.5f)
+            </td>
+          </tr>
+        </table>
+        <br />
+      </td>
     </tr>
-    <tr>
-        <td>
-        Return true if b is pressed, false if not
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::x() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return true if x is pressed, false if not
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::y() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return true if y is pressed, false if not
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::HaveVMU() </b>
-        </td>
-    </tr>
-    <tr>
-        <td> 
-        Return true if the IrisController have a VMU inserted, false if not
-        Note :This function is not implemeted. It return false in any case.  
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::LeftTrigger() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return a value between 0.0f and 1.0f representing how the left trigger is pushed. (non pushed = 0.0f, full pushed = 1.0f)  
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::RightTrigger() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return a value between 0.0f and 1.0f representing how the right trigger is pushed. (non pushed = 0.0f, full pushed = 1.0f)  
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::AnalogVertical() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return a value between -0.5f and 0.5f representing how the vertical analog joypad is pushed. (non pushed = 0.0f, full pushed up = 0.5f, full pushed down = -0.5f)  
-    </td>
-    </tr>
-    <tr>
-        <td>
-            <b>IrisController::AnalogHorizontal() </b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Return a value between -0.5f and 0.5f representing how the horizontal analog joypad is pushed. (non pushed = 0.0f, full pushed up = 0.5f, full pushed down = -0.5f)  
-    </td>
-</tr>
-</table>
-<br>
-</table>
-
+  </table>
 </html>

@@ -20,12 +20,12 @@
 class IrisMaterialManager : public IrisManager<IrisMaterial>
 {
 public:
-	//! LoadMaterial function.
-	/*!
+  //! LoadMaterial function.
+  /*!
 		\param file_name : file name with complete path of bitmap file. Must be a PNG file.
 		\return a pointer to a new IrisMaterial.
 	*/
-	IrisMaterial	*LoadMaterial(char *file_name, TextureType tex = texture_noalpha);
+  IrisMaterial *LoadMaterial(char *file_name, TextureType tex = texture_noalpha);
 };
 
 #endif //CIRISMATERIALMANAGER_H

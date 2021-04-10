@@ -5,12 +5,12 @@
 **  Author : Olivier Chatry - Epitech Console Laboratory
 **           (http://www.epitech.net/labconsole/)
 *********************************************************/
-#include	"Iris.hpp"
+#include "Iris.hpp"
 
 IrisTexture::~IrisTexture()
 {
-	if (_file_name)
-		delete [] _file_name;
+  if (_file_name)
+    delete[] _file_name;
 }
 /*
 void	IrisMaterial::Generate(void (*fct_generate)(unsigned short *buffer, int size_x, int size_y), int size_x, int size_y, TextureType type)
@@ -53,25 +53,24 @@ void	IrisMaterial::Generate(void (*fct_generate)(unsigned short *buffer, int siz
 }
 */
 
-bool	IrisMaterial::LoadFromFile(char *file_name, TextureType type = texture_noalpha)
+bool IrisMaterial::LoadFromFile(char *file_name, TextureType type = texture_noalpha)
 {
-	uint32			tmp;
-	
-	tmp = IrisContext::Get().LoadPNGFile(file_name, _cxt, type);
-	_texture = new IrisTexture[1];
-	IrisTexture * new_one = &(_texture[0]);
-	new_one->SetId(tmp);
-	new_one->SetFileName(file_name);
-	new_one->SetType(type);
-	_num_texture = 1;
-	return (tmp != 0);
+  uint32 tmp;
+
+  tmp = IrisContext::Get().LoadPNGFile(file_name, _cxt, type);
+  _texture = new IrisTexture[1];
+  IrisTexture *new_one = &(_texture[0]);
+  new_one->SetId(tmp);
+  new_one->SetFileName(file_name);
+  new_one->SetType(type);
+  _num_texture = 1;
+  return (tmp != 0);
 }
 
-void	IrisMaterial::Destroy()
+void IrisMaterial::Destroy()
 {
-	if (_num_texture)
-		delete [] _texture;
-	IrisContext::Get().UnloadTexture(&_cxt);
-	_num_texture = 0;
+  if (_num_texture)
+    delete[] _texture;
+  IrisContext::Get().UnloadTexture(&_cxt);
+  _num_texture = 0;
 }
-

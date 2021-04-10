@@ -5,7 +5,7 @@
 `------------------------------|                                     |
                                |                                     |
                                `------------------------------------*/
-#include	"Iris.hpp"
+#include "Iris.hpp"
 #include "opcode.hpp"
 #include "opcode/Opcode.h"
 using namespace Opcode;
@@ -22,7 +22,6 @@ vector<int>
 
 n 
 */
-
 
 #if 0
 
@@ -73,6 +72,5 @@ void ColRayMesh::info(uint i, float& dist, float& u, float& v) const
 	u = f.mU;
 	v = f.mV;
 }
-
 
 #endif

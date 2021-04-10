@@ -18,15 +18,14 @@
 class IrisObjectManager : public IrisManager<IrisImportObject>
 {
 public:
-	//!	LoadObject function.
-	/*!
+  //!	LoadObject function.
+  /*!
 		\param file_path : directory where the file is located. IMD file and textures must be located in the same directory.
 		\param file_name : file name of IMD file.
 		\param scale : scale object by value.
 		\return a pointer to a new IrisImportObject.
 	*/
-    IrisImportObject	*LoadObject(char *file_path, char *file_name,float scale);
+  IrisImportObject *LoadObject(char *file_path, char *file_name, float scale);
 };
-
 
 #endif

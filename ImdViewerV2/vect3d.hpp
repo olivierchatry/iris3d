@@ -23,105 +23,110 @@
 	Class for the vertex, includes methodes to manipulate the vertexes.
 	A vect3d object is a vertex in Iris3D.
 */
-class   vect3d
+class vect3d
 {
 public: // Attributes ************************************
-	union
-	{
-		struct
-		{
-			float	_x, _y, _z, _w; // FIXME: those should be removed if possible
-		};
-		struct
-		{
-            float   x, y, z, w;
-		};
-		float _pos[4];
-	};
+  union
+  {
+    struct
+    {
+      float _x, _y, _z, _w; // FIXME: those should be removed if possible
+    };
+    struct
+    {
+      float x, y, z, w;
+    };
+    float _pos[4];
+  };
 
-public:	// Constructors/Assignators *********************
-
-	//! Constructor of the vect3d class.
-	/*!
+public: // Constructors/Assignators *********************
+  //! Constructor of the vect3d class.
+  /*!
 		Create a vect3d object whith x, y, z values of the vertex to 0.0f.
 	*/
-	vect3d()
-	{
-		_x = 0.0f; _y = 0.0f; _z = 0.0f; _w = 1.0f;
-	}
+  vect3d()
+  {
+    _x = 0.0f;
+    _y = 0.0f;
+    _z = 0.0f;
+    _w = 1.0f;
+  }
 
-	//! Constructor of the vect3d class.
-	/*!
+  //! Constructor of the vect3d class.
+  /*!
 		Create a vect3d object.
 		\param x : a float, the x value of the vertex.
 		\param y : a float, the y value of the vertex.
 		\param z : a float, the z value of the vertex.
 	*/
-	vect3d(const float x, const float y, const float z)
-	{
-		Set(x, y, z);
-	}
+  vect3d(const float x, const float y, const float z)
+  {
+    Set(x, y, z);
+  }
 
-	//! Constructor of the vect3d class.
-	/*!
+  //! Constructor of the vect3d class.
+  /*!
 		Create a vect3d object.
 		\param x : a float, the x value of the vertex.
 		\param y : a float, the y value of the vertex.
 		\param z : a float, the z value of the vertex.
 		\param w : a float, , by default is set to 1.0f.
 	*/
-	vect3d(const float x, const float y, const float z, const float w)
-	{
-		Set(x, y, z, w);
-	}
+  vect3d(const float x, const float y, const float z, const float w)
+  {
+    Set(x, y, z, w);
+  }
 
-	//! Constructor of the vect3d class.
-	/*!
+  //! Constructor of the vect3d class.
+  /*!
 	Create a vect3d object.
 	\param value : a float, the x, y, z value of the vertex.
 	*/
-	vect3d(const float value)
-	{
-		_x = _y = _z = value;
-		_w = value; // FIXME: Is that what we want ?
-	}
-		
-	//! Constructor of the vect3d class.
-	/*!
+  vect3d(const float value)
+  {
+    _x = _y = _z = value;
+    _w = value; // FIXME: Is that what we want ?
+  }
+
+  //! Constructor of the vect3d class.
+  /*!
 	Create a vect3d object.
 	\param value : a pointer to a table of 3 float
 	*/
-	vect3d(const float *value)
-	{
-		_x = *value ++;
-		_y = *value ++;
-		_z = *value ++;
-		_w = 1.0f;
-	}
+  vect3d(const float *value)
+  {
+    _x = *value++;
+    _y = *value++;
+    _z = *value++;
+    _w = 1.0f;
+  }
 
-	vect3d(const vect3d &v)
-	{
-		_x = v._x;
-		_y = v._y;
-		_z = v._z;
-		_w = v._w;
-	}
+  vect3d(const vect3d &v)
+  {
+    _x = v._x;
+    _y = v._y;
+    _z = v._z;
+    _w = v._w;
+  }
 
-	//! Set function.
-	/*!
+  //! Set function.
+  /*!
 		Assign the x, y and z value to a vect3d object.
 		\param x : a float, the x value of the vertex.
 		\param y : a float, the y value of the vertex.
 		\param z : a float, the z value of the vertex.
 		\return nothing.
 	*/
-	void 	Set(const float x, const float y, const float z)
-	{
-		_x = x; _y = y; _z = z; _w = 1.0f;
-	}
+  void Set(const float x, const float y, const float z)
+  {
+    _x = x;
+    _y = y;
+    _z = z;
+    _w = 1.0f;
+  }
 
-	//! Set function.
-	/*!
+  //! Set function.
+  /*!
 		Assign the x, y and z value to a vect3d object.
 		\param x : a float, the x value of the vertex.
 		\param y : a float, the y value of the vertex.
@@ -129,199 +134,200 @@ public:	// Constructors/Assignators *********************
 		\param w : a float, ,usaly set to 1.0f.
 		\retrun nothing.
 	*/
-	void 	Set(const float x, const float y, const float z, const float w)
-	{
-		_x = x; _y = y; _z = z; _w = w;
-	}
+  void Set(const float x, const float y, const float z, const float w)
+  {
+    _x = x;
+    _y = y;
+    _z = z;
+    _w = w;
+  }
 
-public:	// Methods ***************************************
+public: // Methods ***************************************
+  // Arithmetic Operator : Add
+  vect3d operator+(const vect3d &v) const
+  {
+    return vect3d(_x + v._x, _y + v._y, _z + v._z);
+  }
 
+  vect3d operator+(const float f) const
+  {
+    return vect3d(_x + f, _y + f, _z + f);
+  }
 
-	// Arithmetic Operator : Add
-	vect3d	operator + (const vect3d &v) const
-	{
-		return vect3d(_x + v._x, _y + v._y, _z + v._z);
-	}
+  vect3d &operator+=(const vect3d &v)
+  {
+    _x += v._x;
+    _y += v._y;
+    _z += v._z;
+    return (*this);
+  }
 
-    vect3d  operator + (const float f) const
-    {
-        return vect3d(_x + f, _y + f, _z + f);
-    }
+  vect3d &operator+=(const float v)
+  {
+    _x += v;
+    _y += v;
+    _z += v;
+    return (*this);
+  }
 
-	vect3d	&operator += (const vect3d& v)
-	{
-		_x += v._x;
-		_y += v._y;
-		_z += v._z;
-		return (*this);
-	}
+  // Arithmetic Operator : Subtract
+  vect3d operator-(const vect3d &v) const
+  {
+    return vect3d(_x - v._x, _y - v._y, _z - v._z);
+  }
 
-	vect3d	&operator += (const float v)
-	{
-		_x += v;
-		_y += v;
-		_z += v;
-		return (*this);
-	}
+  vect3d operator-(const float f) const
+  {
+    return vect3d(_x - f, _y - f, _z - f);
+  }
 
-	// Arithmetic Operator : Subtract
-	vect3d	operator - (const vect3d& v) const
-	{
-		return vect3d(_x - v._x, _y - v._y, _z - v._z);
-	}
+  vect3d &operator-=(const vect3d &v)
+  {
+    _x -= v._x;
+    _y -= v._y;
+    _z -= v._z;
+    return (*this);
+  }
 
-    vect3d  operator - (const float f) const
-    {
-        return vect3d(_x - f, _y - f, _z - f);
-    }
+  vect3d &operator-=(const float f)
+  {
+    _x -= f;
+    _y -= f;
+    _z -= f;
+    return (*this);
+  }
 
-	vect3d	&operator -= (const vect3d& v)
-	{
-		_x -= v._x;
-		_y -= v._y;
-		_z -= v._z;
-		return (*this);
-	}
+  // Arithmetic Operator : Multiply
+  vect3d operator*(const vect3d &v)
+  {
+    return vect3d(_x * v._x, _y * v._y, _z * v._z);
+  }
 
-    vect3d  &operator -= (const float f)
-    {
-        _x -= f;
-        _y -= f;
-        _z -= f;
-        return (*this);
-    }
+  vect3d operator*(const float f)
+  {
+    return vect3d(_x * f, _y * f, _z * f);
+  }
 
-	// Arithmetic Operator : Multiply
-	vect3d  operator * (const vect3d &v)
-	{
-	    return vect3d(_x * v._x, _y * v._y, _z * v._z);
-	}
-	
-	vect3d 	operator * (const float f)
-	{
-		return vect3d(_x * f, _y * f, _z * f);
-	}
+  vect3d &operator*=(const float v)
+  {
+    _x *= v;
+    _y *= v;
+    _z *= v;
+    return (*this);
+  }
 
-	vect3d	&operator *= (const float v)
-	{
-		_x *= v;
-		_y *= v;
-		_z *= v;
-		return (*this);
-	}
+  // Arithmetic Operator : Divide
+  vect3d operator/(const float f)
+  {
+    return vect3d(_x / f, _y / f, _z / f);
+  }
 
-	// Arithmetic Operator : Divide
-	vect3d 	operator / (const float f)
-	{
-		return vect3d(_x / f, _y / f, _z / f);
-	}
+  vect3d &operator/=(const float f)
+  {
+    _x /= f;
+    _y /= f;
+    _z /= f;
+    return (*this);
+  }
 
-	vect3d	&operator /= (const float f)
-	{
-		_x /= f;
-		_y /= f;
-		_z /= f;
-		return (*this);
-	}
+  // Arithmetic Operator: Unary -
+  vect3d operator-() const
+  {
+    return vect3d(-_x, -_y, -_z);
+  }
 
-    // Arithmetic Operator: Unary -
-    vect3d  operator - () const
-    {
-        return vect3d(-_x, -_y, -_z);
-    }
+  // Comparaison Operators
+  bool operator==(const vect3d &v) const
+  {
+    return (_x == v._x) && (_y == v._y) && (_z == v._z);
+  }
 
-	// Comparaison Operators
-	bool 		operator ==	(const vect3d& v) const
-	{
-		return (_x == v._x) && (_y == v._y) && (_z == v._z);
-	}
+  bool operator!=(const vect3d &v) const
+  {
+    return (_x != v._x) || (_y != v._y) || (_z != v._z);
+  }
 
-	bool		operator != (const vect3d& v) const
-	{
-		return (_x != v._x) || (_y != v._y) || (_z != v._z);
-	}
-	
-	// Printing
-	//!	Print function.
-	/*!
+  // Printing
+  //!	Print function.
+  /*!
 		Print on standard out informations on the vect3d object. 
 		\return nothing.
 	*/
-	void	Print(void)
-	{
-		printf("x = %f, y = %f, z = %f\n",
-				(double) _x, (double) _y, (double) _z);		
-	}
-	
-	// Dot Product
-	float   Dot(const vect3d &v) const
-	{
-	    return (_x * v._x) + (_y * v._y) + (_z * v._z);
-	}
+  void Print(void)
+  {
+    printf("x = %f, y = %f, z = %f\n",
+           (double)_x, (double)_y, (double)_z);
+  }
 
-	// Cross Product
-	vect3d  Cross(const vect3d &v) const
-	{
-		return vect3d(_y * v._z - _z * v._y,
-						_z * v._x - _x * v._z,
-						_x * v._y - _y * v._x);
-	}
+  // Dot Product
+  float Dot(const vect3d &v) const
+  {
+    return (_x * v._x) + (_y * v._y) + (_z * v._z);
+  }
 
-	// Magnitude (Length)
-	float	Magnitude(void) const
-	{
-	    // FIXME: should we use fsqrt() there ?
-		return sqrt(_x * _x + _y * _y + _z * _z);
-	}
-	
-	// Normalize
-	vect3d &Normalize(void)
-	{
-		float	mag = Magnitude();
-		
-		_x /= mag;
-		_y /= mag;
-		_z /= mag;
-		return (*this);
-	}
-	
-	vect3d &Normalize(float mag)
-	{
-	    _x /= mag;
-	    _y /= mag;
-	    _z /= mag;
-	    return (*this);
-	}
-	
-	// Homogenize
-	vect3d &Homogenize(void)
-	{
-	    _x /= _w;
-	    _y /= _w;
-	    _z /= _w;
-	    _w = 1.0f;
-	    return (*this);
-	}
-	static vect3d	RotateAxis(float angle, const vect3d &axis)
-	{
-		vect3d	tmp;		
+  // Cross Product
+  vect3d Cross(const vect3d &v) const
+  {
+    return vect3d(_y * v._z - _z * v._y,
+                  _z * v._x - _x * v._z,
+                  _x * v._y - _y * v._x);
+  }
 
-		float c = cos(angle);
-		float s = sin(angle);
+  // Magnitude (Length)
+  float Magnitude(void) const
+  {
+    // FIXME: should we use fsqrt() there ?
+    return sqrt(_x * _x + _y * _y + _z * _z);
+  }
 
-		tmp._x =	 (c + ( 1 - c) * axis._x);
-		tmp._x += ((1 - c) * axis._x * axis._y - axis._z * s);
-		tmp._x += ((1 - c) * axis._x * axis._z + axis._y * s);
+  // Normalize
+  vect3d &Normalize(void)
+  {
+    float mag = Magnitude();
 
-		tmp._y =  ((1 - c) * axis._x * axis._y + axis._z * s);
-		tmp._y += (c + (1 - c) * axis._y);
-		tmp._y += ((1 - c) * axis._y * axis._z - axis._x * s);
+    _x /= mag;
+    _y /= mag;
+    _z /= mag;
+    return (*this);
+  }
 
-		tmp._z  = ((1 - c) * axis._x * axis._z - axis._y * s);
-		tmp._z += ((1 - c) * axis._y * axis._z + axis._x * s);
-		tmp._z += (c + (1 - c) * axis._z);
-		return tmp;
-	}
+  vect3d &Normalize(float mag)
+  {
+    _x /= mag;
+    _y /= mag;
+    _z /= mag;
+    return (*this);
+  }
+
+  // Homogenize
+  vect3d &Homogenize(void)
+  {
+    _x /= _w;
+    _y /= _w;
+    _z /= _w;
+    _w = 1.0f;
+    return (*this);
+  }
+  static vect3d RotateAxis(float angle, const vect3d &axis)
+  {
+    vect3d tmp;
+
+    float c = cos(angle);
+    float s = sin(angle);
+
+    tmp._x = (c + (1 - c) * axis._x);
+    tmp._x += ((1 - c) * axis._x * axis._y - axis._z * s);
+    tmp._x += ((1 - c) * axis._x * axis._z + axis._y * s);
+
+    tmp._y = ((1 - c) * axis._x * axis._y + axis._z * s);
+    tmp._y += (c + (1 - c) * axis._y);
+    tmp._y += ((1 - c) * axis._y * axis._z - axis._x * s);
+
+    tmp._z = ((1 - c) * axis._x * axis._z - axis._y * s);
+    tmp._z += ((1 - c) * axis._y * axis._z + axis._x * s);
+    tmp._z += (c + (1 - c) * axis._z);
+    return tmp;
+  }
 };
 
 #endif //__VECT3D_HPP__

@@ -15,29 +15,10 @@ You can acces skeletal manager by calling IrisContext::GetSkeltalManager.
 class IrisSkeletalManager : public IrisManager<IrisSkeletal>
 {
 public:
-	//! LoadSkeletal function.
-	/*!
+  //! LoadSkeletal function.
+  /*!
 	\param file_name : file name with path of the imd bones file.
 	\return a pointer to a new IrisSkeletal.
 	*/
-	IrisSkeletal	*LoadSkeletal(char *file_name);
+  IrisSkeletal *LoadSkeletal(char *file_name);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

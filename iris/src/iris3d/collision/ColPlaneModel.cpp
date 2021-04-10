@@ -6,9 +6,8 @@
 **          (http://www.epitech.net/labconsole/)
 *********************************************************/
 
-#include	"Iris.hpp"
-#include	"../opcode/Opcode.h"
+#include "Iris.hpp"
+#include "../opcode/Opcode.h"
 
 using namespace Opcode;
-#include	"collision/ColModel.hpp"
-
+#include "collision/ColModel.hpp"

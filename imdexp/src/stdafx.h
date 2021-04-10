@@ -1,5 +1,5 @@
-#pragma		 once
-#pragma		message("Creating precompiled header. Please wait ...")
+#pragma once
+#pragma message("Creating precompiled header. Please wait ...")
 #include <windows.h>
 #include <max.h>
 #include <istdplug.h>
@@ -13,19 +13,29 @@
 #include <Stdio.h>
 #include <String.h>
 #include "hack/MAX_Mem.h"
-#define	null	NULL
-#define RELEASE(x)		{ if (x != null) delete x;		x = null; }
-#define RELEASEARRAY(x)	{ if (x != null) delete []x;	x = null; }
+#define null NULL
+#define RELEASE(x) \
+  {                \
+    if (x != null) \
+      delete x;    \
+    x = null;      \
+  }
+#define RELEASEARRAY(x) \
+  {                     \
+    if (x != null)      \
+      delete[] x;       \
+    x = null;           \
+  }
 
-typedef signed char			sbyte;
-typedef unsigned char		ubyte;
-typedef signed short		sword;
-typedef unsigned short		uword;
-typedef signed int			sdword;
-typedef unsigned int		udword;
-typedef signed __int64		sqword;
-typedef unsigned __int64	uqword;
-typedef float				sfloat;
+typedef signed char sbyte;
+typedef unsigned char ubyte;
+typedef signed short sword;
+typedef unsigned short uword;
+typedef signed int sdword;
+typedef unsigned int udword;
+typedef signed __int64 sqword;
+typedef unsigned __int64 uqword;
+typedef float sfloat;
 
 #include "strip/zappy/RevisitedRadix.h"
 #include "strip/zappy/CustomArray.h"
@@ -45,4 +55,3 @@ typedef float				sfloat;
 #include "ImdExp.h"
 #include <assert.h>
 #include <set>
-

@@ -1,155 +1,134 @@
-
-body 
-{ 
-	font-family: Tahoma, Helvetica, Arial, sans-serif; 
-	font-size: 10pt; 
-	color: #000000; 
-	font-style: normal; 
-	text-align: justify 
+body {
+  font-family: Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
+  text-align: justify;
 }
 
-code
-{
-	font-family: "Courier New", Courier, monospace;
-	font-size: 9pt;
-	font-style: normal;
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9pt;
+  font-style: normal;
 }
 
-p 
-{  
-	font-family: Tahoma, Helvetica, Arial, sans-serif; 
-	font-size: 10pt; 
-	color: #000000; 
-	font-style: normal; 
-	text-align: justify 
+p {
+  font-family: Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
+  text-align: justify;
 }
 
-table
-{
-	border: thin solid Black;
-	
+table {
+  border: thin solid Black;
 }
 
-table.code
-{
-	border: none;
-	background-color: Silver;
-	text-shadow: White;
+table.code {
+  border: none;
+  background-color: Silver;
+  text-shadow: White;
 }
 
-td.code
-{
-	font-family: monospace; 
-	font-size: 8pt; 
-	color: #000000; 
-	font-style: normal; 
+td.code {
+  font-family: monospace;
+  font-size: 8pt;
+  color: #000000;
+  font-style: normal;
 }
 
-td 
-{ 
-	font-family: monospace; 
-	font-size: 10pt; 
-	color: #000000; 
-	font-style: normal; 
+td {
+  font-family: monospace;
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
 }
 
-td.menu
-{ 
-	font-family: monospace; 
-	font-size: 10pt; 
-	color: #000000; 
-	font-style: normal;
-	border-bottom: thin dashed #708090;
+td.menu {
+  font-family: monospace;
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
+  border-bottom: thin dashed #708090;
 }
 
-td.subsection
-{ 
-	font-family: "Courier New", Courier, monospace; 
-	font-size: 10pt; 
-	color: #000000; 
-	font-style: normal;
-	border-bottom: thin dashed #708090;
-	font-weight: bold;
+td.subsection {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
+  border-bottom: thin dashed #708090;
+  font-weight: bold;
 }
 
-th
-{ 
-	background: Silver;
-	font-family: "Arial Black"; 
-	font-size: 12pt; 
-	color: #000000; 
-	font-style: normal; 
-	text-align: justify;
-	border-bottom: thin solid #708090;
+th {
+  background: Silver;
+  font-family: 'Arial Black';
+  font-size: 12pt;
+  color: #000000;
+  font-style: normal;
+  text-align: justify;
+  border-bottom: thin solid #708090;
 }
 
-a:hover 
-{  
-	font-weight: bold; 
-	color: #4477AA; 
-	text-decoration: none; 
+a:hover {
+  font-weight: bold;
+  color: #4477aa;
+  text-decoration: none;
 }
 
-a:link 
-{ 
-	font-weight: bold; 
-	color: #996633; 
-	text-decoration: none; 
+a:link {
+  font-weight: bold;
+  color: #996633;
+  text-decoration: none;
 }
 
-a:active 
-{ 
-	font-weight: bold; 
-	color: #996633; 
-	text-decoration: none; 
+a:active {
+  font-weight: bold;
+  color: #996633;
+  text-decoration: none;
 }
 
-a:visited 
-{ 
-	font-weight: bold; 
-	color: #996633; 
-	text-decoration: none; 
+a:visited {
+  font-weight: bold;
+  color: #996633;
+  text-decoration: none;
 }
 
-h1 
-{  
-	font-size: 10pt; 
-	font-weight: bold; 
-	color: #996633; 
-	text-indent: 10px; 
+h1 {
+  font-size: 10pt;
+  font-weight: bold;
+  color: #996633;
+  text-indent: 10px;
 }
 
-h2 
-{  
-	font-size: 10pt; 
-	font-weight: bold; 
-	color: #AA7744; 
-	text-indent: 20px; 
+h2 {
+  font-size: 10pt;
+  font-weight: bold;
+  color: #aa7744;
+  text-indent: 20px;
 }
 
-h3 
-{  
-	font-size: 10pt; 
-	font-weight: normal; 
-	color: #AA7744; 
-	text-indent: 30px;
-	}
-
-pre 
-{  
-	font-family: "Courier New", Courier, monospace; 
-	font-size: 9pt; 
-	background-color: #E0E0E0; 
-	white-space: normal
+h3 {
+  font-size: 10pt;
+  font-weight: normal;
+  color: #aa7744;
+  text-indent: 30px;
 }
 
-.code
-{
-	border: none;
-	background-color: Silver;
-	text-shadow: White;
-	font-family: monospace; 
-	font-size: 8pt; 
-	color: #000000; 
-	font-style: normal; 	
+pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9pt;
+  background-color: #e0e0e0;
+  white-space: normal;
+}
+
+.code {
+  border: none;
+  background-color: Silver;
+  text-shadow: White;
+  font-family: monospace;
+  font-size: 8pt;
+  color: #000000;
+  font-style: normal;
 }
